@@ -1,0 +1,13 @@
+Tab,Date,WorshipLeader,APM,ColorAssignment,ColorHex,Group,SongNumber,Title,Singer,OriginalKey,MyKey,LyricsURL,YouTubeURL,EventName,Description,Location,Role,Name,Topic,Speaker,StartDate,EndDate,Theme,PrayerPoints
+ServiceInfo,2026-07-26,Jane Reyes,Mark Santos,Red,#c0392b,,,,,,,,,,,,,,,,,,,
+ServiceInfo,2026-08-02,Charlene Cruz,Angel Rivera,Teal,#008080,,,,,,,,,,,,,,,,,,,
+Songs,2026-07-26,,,,,Praise,1,Great Are You Lord,All Sons & Daughters,G,A,https://example.com/lyrics/great-are-you-lord,https://youtube.com/example,,,,,,,,,,,
+Songs,2026-07-26,,,,,Worship,1,Build My Life,Housefires,D,E,https://example.com/lyrics/build-my-life,https://youtube.com/example,,,,,,,,,,,
+Activities,2026-07-26,,,,,,,,,,,,,PAW Rehearsal,Full band and vocal preparation for Sunday service.,Main Sanctuary,,,,,,,
+Activities,2026-08-02,,,,,,,,,,,,,Worship Workshop,Training devotion and practical worship team coaching.,Fellowship Hall,,,,,,,
+Assignments,2026-07-26,,,,,,,,,,,,,,,,Worship Leader,Jane Reyes,,,,,
+Assignments,2026-07-26,,,,,,,,,,,,,,,,APM,Mark Santos,,,,,
+YouthFellowship,2026-07-26,,,,,,,,,,,,,,,Youth Room,,,Faith That Stands,Youth Leader,,,
+YouthFellowship,2026-08-09,,,,,,,,,,,,,,,Prayer Room,,,Prayer and Purpose,Pastoral Team,,,
+PrayerFasting,,,,,,,,,,,,,,,,,,,,,2026-07-20,2026-07-26,Consecrated Worship,"Unity, purity, families, youth, and Sunday service."
+PrayerFasting,,,,,,,,,,,,,,,,,,,,,2026-08-03,2026-08-09,Faithful Service,"Healing, provision, church growth, and ministers."

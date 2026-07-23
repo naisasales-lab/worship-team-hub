@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sunday Service | Worship Team Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/sunday-service.css">
+</head>
+<body class="service-page">
+  <header class="site-header">
+    <nav class="navbar" aria-label="Main navigation">
+      <a class="brand" href="index.html"><img src="assets/logo.svg" alt="DFC logo"><span>Worship Team Hub</span></a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+      <ul class="nav-links" id="primary-nav">
+        <li><a href="index.html" data-nav="index">Home</a></li>
+        <li><a href="activities.html" data-nav="activities">Activities</a></li>
+        <li><a href="dashboard.html" data-nav="dashboard">Dashboard</a></li>
+        <li><a href="assignment.html" data-nav="assignment">Assignment</a></li>
+        <li><a href="sunday-service.html" data-nav="sunday-service">Sunday Service</a></li>
+        <li><a href="teens-youth.html" data-nav="teens-youth">Teens & Youth</a></li>
+        <li><a href="prayer-fasting.html" data-nav="prayer-fasting">Prayer & Fasting</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="service-shell">
+    <div class="current-time" id="currentTime">--:--</div>
+    <section class="service-hero">
+      <p class="eyebrow">Door of Faith Church</p>
+      <h1>Sunday Service</h1>
+      <div class="countdown" aria-label="Countdown to next Sunday at 8:00 AM">
+        <div><strong id="days">00</strong><span>DD</span></div>
+        <div><strong id="hours">00</strong><span>HH</span></div>
+        <div><strong id="minutes">00</strong><span>MM</span></div>
+        <div><strong id="seconds">00</strong><span>SS</span></div>
+      </div>
+    </section>
+
+    <section class="service-info-grid" aria-label="Service information">
+      <article class="info-card"><span>DATE</span><strong id="serviceDate">Loading...</strong></article>
+      <article class="info-card"><span>WORSHIP LEADER</span><strong id="worshipLeader">Loading...</strong></article>
+      <article class="info-card"><span>APM</span><strong id="apm">Loading...</strong></article>
+      <article class="info-card"><span>COLOR ASSIGNMENT</span><strong class="color-value"><i id="colorDot"></i><span id="colorAssignment">Loading...</span></strong></article>
+    </section>
+
+    <section class="song-group">
+      <h2 class="song-group-title"><span>+</span> PRAISE SONG <span>+</span></h2>
+      <div class="song-list" id="praiseSongs"></div>
+    </section>
+
+    <section class="song-group">
+      <h2 class="song-group-title"><span>+</span> WORSHIP SONG <span>+</span></h2>
+      <div class="song-list" id="worshipSongs"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <strong>Door of Faith Church</strong> Worship Team Hub &copy; <span id="footerYear"></span>
+  </footer>
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/sunday-service.js"></script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+.service-page {
+  background: var(--bg);
+}
+
+.service-shell {
+  position: relative;
+  width: min(1180px, calc(100% - 28px));
+  margin: 0 auto;
+  padding: 42px 0 76px;
+}
+
+.current-time {
+  position: absolute;
+  top: 18px;
+  right: 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.service-hero {
+  padding: 48px 0 32px;
+  text-align: center;
+}
+
+.service-hero h1 {
+  margin: 0 0 28px;
+  color: var(--text);
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(44px, 7vw, 86px);
+}
+
+.countdown {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(72px, 136px));
+  justify-content: center;
+  gap: 14px;
+}
+
+.countdown div {
+  min-height: 112px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.countdown strong {
+  color: var(--gold);
+  font-size: clamp(34px, 6vw, 58px);
+  line-height: 1;
+}
+
+.countdown span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.service-info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin: 30px 0 48px;
+}
+
+.info-card {
+  min-height: 118px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.info-card span {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.info-card strong {
+  color: var(--text);
+  font-size: clamp(18px, 2vw, 24px);
+  line-height: 1.25;
+}
+
+.color-value {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.color-value i {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+}
+
+.song-group {
+  margin-top: 42px;
+}
+
+.song-group-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin: 0 0 24px;
+  color: var(--gold);
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(26px, 4vw, 42px);
+}
+
+.song-list {
+  display: grid;
+  gap: 14px;
+}
+
+.song-card {
+  display: grid;
+  grid-template-columns: 58px 1fr auto;
+  align-items: center;
+  gap: 18px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  transition: border-color 180ms ease, background 180ms ease;
+}
+
+.song-card:hover {
+  border-color: var(--gold);
+  background: var(--panel-2);
+}
+
+.song-number {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: #0a0a0a;
+  font-weight: 900;
+}
+
+.song-body h3 {
+  margin: 0;
+  font-size: clamp(22px, 3vw, 34px);
+}
+
+.song-singer {
+  margin: 5px 0 12px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.song-keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.song-keys span {
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--muted);
+}
+
+.song-keys strong {
+  color: var(--text);
+}
+
+.song-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.song-btn {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border: 1px solid var(--gold);
+  border-radius: 999px;
+  color: var(--gold);
+  font-weight: 900;
+}
+
+.song-btn:hover {
+  background: var(--gold);
+  color: #0a0a0a;
+}
+
+.song-btn.disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  .service-info-grid,
+  .song-card {
+    grid-template-columns: 1fr;
+  }
+
+  .song-actions {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 640px) {
+  .countdown {
+    grid-template-columns: repeat(2, minmax(110px, 1fr));
+  }
+
+  .current-time {
+    position: static;
+    text-align: right;
+  }
+}

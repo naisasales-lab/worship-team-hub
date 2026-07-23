@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | Worship Team Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="navbar" aria-label="Main navigation">
+      <a class="brand" href="index.html"><img src="assets/logo.svg" alt="DFC logo"><span>Worship Team Hub</span></a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+      <ul class="nav-links" id="primary-nav">
+        <li><a href="index.html" data-nav="index">Home</a></li>
+        <li><a href="activities.html" data-nav="activities">Activities</a></li>
+        <li><a href="dashboard.html" data-nav="dashboard">Dashboard</a></li>
+        <li><a href="assignment.html" data-nav="assignment">Assignment</a></li>
+        <li><a href="sunday-service.html" data-nav="sunday-service">Sunday Service</a></li>
+        <li><a href="teens-youth.html" data-nav="teens-youth">Teens & Youth</a></li>
+        <li><a href="prayer-fasting.html" data-nav="prayer-fasting">Prayer & Fasting</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <section class="page-title"><p class="eyebrow">Overview</p><h1>Dashboard</h1></section>
+    <section class="section"><div class="page-shell dashboard-grid" id="dashboardCards"></div></section>
+  </main>
+  <footer class="site-footer"><strong>Door of Faith Church</strong> Worship Team Hub &copy; <span id="footerYear"></span></footer>
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -21,7 +21,7 @@ const ADD_ACTIVITY_SCRIPT_URL = "PASTE_APPS_SCRIPT_URL_HERE";
 // Deploy backend/PhotoAlbums.gs as a Google Apps Script Web App connected to
 // your Google Sheet and Drive folder, then paste the resulting .../exec URL.
 // When this placeholder is unchanged, albums fall back to this browser only.
-const PHOTO_ALBUMS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwUraNBoPAagsozsn0LI64awdTI_D5IMn9TaFIr-0QV5wK1WOo6tRYfETnkBvQqrjoH/exec";
+const PHOTO_ALBUMS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzqd6CdEkgHq0LMGuuRRhpu1GIeLwpaKI9SaXvER9VQuTL7c7_qdB4vsMV7Cw8EmjK2/exec";
 
 window.SHEET_URLS = SHEET_URLS;
 window.ADD_ACTIVITY_SCRIPT_URL = ADD_ACTIVITY_SCRIPT_URL;

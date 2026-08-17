@@ -1,6 +1,6 @@
 # Backend Setup - Google Sheet Published CSV
 
-This site uses a Google Sheet as a free read-only data source by publishing each tab to the web as CSV. There is no script backend and no server deployment.
+This site uses a Google Sheet as a free read-only data source by publishing each tab to the web as CSV. The only optional script is `AddActivity.gs`, which powers the public Add Activity submission form.
 
 ## 1. Create The Google Sheet
 
@@ -33,13 +33,15 @@ Expected headers:
 ```text
 ServiceInfo: Date, WorshipLeader, APM, ColorAssignment, ColorHex
 Songs: Date, Group, SongNumber, Title, Singer, OriginalKey, MyKey, LyricsURL, YouTubeURL
-Activities: Date, EventName, Description, Location
+Activities: Date, EventName, Description, Location, Photos, Status
 Assignments: Date, Role, Name
 YouthFellowship: Date, Topic, Speaker, Location
 PrayerFasting: StartDate, EndDate, Theme, PrayerPoints
 ```
 
 For `Songs`, `Group` must be exactly `Praise` or `Worship`.
+
+For `Activities`, `Status` controls approval. `Pending` rows are hidden from the public site. `Approved`, blank, or missing status rows are displayed.
 
 ## 3. Publish Each Tab To Web As CSV
 
@@ -97,9 +99,45 @@ The frontend currently reads these exact fields:
 
 - `ServiceInfo`: `Date`, `WorshipLeader`, `APM`, `ColorAssignment`, `ColorHex`
 - `Songs`: `Date`, `Group`, `SongNumber`, `Title`, `Singer`, `OriginalKey`, `MyKey`, `LyricsURL`, `YouTubeURL`
-- `Activities`: `Date`, `EventName`, `Description`, `Location`
+- `Activities`: `Date`, `EventName`, `Description`, `Location`, `Photos`, `Status`
 - `Assignments`: `Date`, `Role`, `Name`
 - `YouthFellowship`: `Date`, `Topic`, `Speaker`, `Location`
 - `PrayerFasting`: `StartDate`, `EndDate`, `Theme`, `PrayerPoints`
 
 Keep these names unchanged unless you also update the frontend JavaScript.
+
+## Optional Public Add Activity Form
+
+The `activities.html` page has a public `+ Add Activity` form. It does not change how the site reads published CSV data. It only adds a write path for activity submissions.
+
+### 1. Create A Google Drive Photo Folder
+
+1. Create a Drive folder for submitted activity photos.
+2. Open the folder and copy its folder ID from the URL.
+3. In a URL like `https://drive.google.com/drive/folders/FOLDER_ID_HERE`, copy only `FOLDER_ID_HERE`.
+4. Paste that ID into `PHOTOS_FOLDER_ID` in `AddActivity.gs`.
+
+### 2. Deploy `AddActivity.gs`
+
+1. Open your Google Sheet.
+2. Go to `Extensions > Apps Script`.
+3. Paste the contents of `backend/AddActivity.gs`.
+4. Save the project.
+5. Click `Deploy > New deployment`.
+6. Select `Web app`.
+7. Set `Execute as` to `Me`.
+8. Set `Who has access` to `Anyone`.
+9. Deploy, authorize the script, and copy the `.../exec` URL.
+10. Paste that URL into `ADD_ACTIVITY_SCRIPT_URL` in `js/config.js`.
+
+### 3. Approval Workflow
+
+New submissions are appended to the `Activities` tab as:
+
+```text
+Date, EventName, Description, Location, Photos, Pending
+```
+
+Rows with `Status = Pending` are hidden from the public site. To approve one, review the details and photo links, then change `Status` to `Approved`. To reject one, delete the row.
+
+Because the endpoint is public and there is no login gate, check the Sheet and Drive folder periodically for spam or inappropriate submissions. The script limits submissions to 6 photos and 5 MB per photo.

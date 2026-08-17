@@ -12,7 +12,20 @@ const SHEET_URLS = {
   PrayerFasting: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSWAgQp41RDz-hGEznGI2ZvgMy53OcjuMcM_62LZl_-ZsYa73n7PsxKnC5U-OXbDzZSCBd9EJpoinwd/pub?gid=984236217&single=true&output=csv"
 };
 
+// Web App URL for the public Add Activity submission form.
+// Deploy backend/AddActivity.gs as a Google Apps Script Web App, then paste
+// the resulting .../exec URL here.
+const ADD_ACTIVITY_SCRIPT_URL = "PASTE_APPS_SCRIPT_URL_HERE";
+
+// Web App URL for shared Activity Photo Albums.
+// Deploy backend/PhotoAlbums.gs as a Google Apps Script Web App connected to
+// your Google Sheet and Drive folder, then paste the resulting .../exec URL.
+// When this placeholder is unchanged, albums fall back to this browser only.
+const PHOTO_ALBUMS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwUraNBoPAagsozsn0LI64awdTI_D5IMn9TaFIr-0QV5wK1WOo6tRYfETnkBvQqrjoH/exec";
+
 window.SHEET_URLS = SHEET_URLS;
+window.ADD_ACTIVITY_SCRIPT_URL = ADD_ACTIVITY_SCRIPT_URL;
+window.PHOTO_ALBUMS_SCRIPT_URL = PHOTO_ALBUMS_SCRIPT_URL;
 window.APP_CONFIG = {
   CHURCH_NAME: "Door of Faith Church",
   SITE_NAME: "Worship Team Hub",

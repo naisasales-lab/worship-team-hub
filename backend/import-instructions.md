@@ -34,6 +34,7 @@ After each import, quickly confirm:
 - There is no note row such as `sample data`.
 - Dates use `YYYY-MM-DD`.
 - The `Songs` tab uses only `Praise` or `Worship` in the `Group` column.
+- The `Activities` tab includes `Photos` and `Status` columns for the approval workflow.
 
 ## Publish The Tabs
 

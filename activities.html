@@ -17,6 +17,7 @@
       <ul class="nav-links" id="primary-nav">
         <li><a href="index.html" data-nav="index">Home</a></li>
         <li><a href="activities.html" data-nav="activities">Activities</a></li>
+
         <li><a href="dashboard.html" data-nav="dashboard">Dashboard</a></li>
         <li><a href="assignment.html" data-nav="assignment">Assignment</a></li>
         <li><a href="sunday-service.html" data-nav="sunday-service">Sunday Service</a></li>
@@ -27,8 +28,90 @@
   </header>
   <main>
     <section class="page-title"><p class="eyebrow">Church calendar</p><h1>Church Activities</h1></section>
-    <section class="section"><div class="page-shell record-grid" data-sheet="Activities"></div></section>
+    <section class="section">
+      <div class="page-shell">
+        <div class="activity-tabs" role="tablist" aria-label="Activity views">
+          <button class="activity-tab is-active" type="button" id="activitiesTab" role="tab" aria-selected="true" aria-controls="activitiesPanel" data-activity-tab="activities">Activities</button>
+          <button class="activity-tab" type="button" id="photosTab" role="tab" aria-selected="false" aria-controls="photosPanel" data-activity-tab="photos">Activity Photos</button>
+        </div>
+
+        <section class="activity-panel is-active" id="activitiesPanel" role="tabpanel" aria-labelledby="activitiesTab" data-activity-panel="activities">
+          <div class="activity-actions">
+            <button class="gold-action" type="button" id="openActivityModal">+ Add Activity</button>
+          </div>
+          <div class="record-grid" data-sheet="Activities"></div>
+        </section>
+
+        <section class="activity-panel" id="photosPanel" role="tabpanel" aria-labelledby="photosTab" data-activity-panel="photos" hidden>
+          <div class="photo-toolbar">
+            <div>
+              <p class="eyebrow">Shared memories</p>
+              <h2>Activity photo albums</h2>
+              <p>Create simple albums for rehearsals, fellowship, worship workshops, and ministry gatherings. Photos are saved online when cloud album storage is connected.</p>
+              <p class="album-status" id="albumStorageStatus" role="status" aria-live="polite">Checking album storage...</p>
+            </div>
+            <form class="album-create" id="albumCreateForm">
+              <label for="albumName">Album name</label>
+              <div>
+                <input type="text" id="albumName" maxlength="80" placeholder="e.g. Youth Fellowship Night" required>
+                <button class="gold-action" type="submit">Create Album</button>
+              </div>
+            </form>
+          </div>
+          <div class="album-workspace" id="activityAlbumWorkspace">
+            <aside class="album-sidebar" aria-label="Activity photo albums">
+              <div class="album-sidebar-head">
+                <span class="card-kicker">Albums</span>
+                <strong id="albumCount">0</strong>
+              </div>
+              <div class="album-list" id="albumList"></div>
+            </aside>
+            <div class="album-detail" id="albumDetail">
+              <div class="album-empty">
+                <span class="card-kicker">Activity Photos</span>
+                <h2>Create an album to start adding photos.</h2>
+                <p>Albums keep your church activity memories organized and easy to browse.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
   </main>
+
+  <div class="form-modal" id="activityModal" aria-hidden="true" role="dialog" aria-labelledby="activityModalTitle">
+    <div class="form-panel">
+      <button class="form-close" type="button" id="closeActivityModal" aria-label="Close add activity form">&times;</button>
+      <p class="eyebrow">Public submission</p>
+      <h2 id="activityModalTitle">Add Activity</h2>
+      <form id="addActivityForm">
+        <label>
+          <span>Date</span>
+          <input type="date" id="activityDate" required>
+        </label>
+        <label>
+          <span>Event Name</span>
+          <input type="text" id="activityEventName" required maxlength="120">
+        </label>
+        <label>
+          <span>Description</span>
+          <textarea id="activityDescription" rows="4" maxlength="800"></textarea>
+        </label>
+        <label>
+          <span>Location</span>
+          <input type="text" id="activityLocation" maxlength="160">
+        </label>
+        <label>
+          <span>Photos</span>
+          <input type="file" id="activityPhotos" accept="image/*" multiple>
+        </label>
+        <p class="form-help">You may upload up to 6 photos. Each photo should be 5 MB or smaller.</p>
+        <p class="form-status" id="activityFormStatus" role="status" aria-live="polite"></p>
+        <button class="gold-action submit-action" type="submit" id="submitActivity">Submit Activity</button>
+      </form>
+    </div>
+  </div>
+
   <footer class="site-footer"><strong>Door of Faith Church</strong> Worship Team Hub &copy; <span id="footerYear"></span></footer>
   <script src="js/config.js"></script>
   <script src="js/main.js"></script>

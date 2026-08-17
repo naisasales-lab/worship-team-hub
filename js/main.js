@@ -432,17 +432,20 @@
         button.type = "button";
         button.setAttribute("aria-label", `View ${photo.name || album.name} full size`);
         const image = document.createElement("img");
-        image.src = photo.src;
+        image.src = photo.displaySrc || driveImageDisplayUrl(photo.src, photo.fileId);
         image.alt = photo.name || `${album.name} photo`;
         image.loading = "lazy";
+        image.referrerPolicy = "no-referrer";
+        image.addEventListener("error", () => {
+          if (image.dataset.fallbackTried) return;
+          image.dataset.fallbackTried = "true";
+          image.src = photo.src;
+        });
         button.appendChild(image);
         button.addEventListener("click", () => openPhotoViewer(photo, album.name));
 
         const meta = element("div", "album-photo-meta");
-        meta.append(
-          element("strong", "", photo.name || "Activity photo"),
-          element("span", "", `${formatStoredPhotoDate(photo.createdAt)} - Click to view`)
-        );
+        meta.appendChild(element("strong", "", formatStoredPhotoDate(photo.createdAt)));
 
         const photoActions = element("div", "album-photo-actions");
         const deletePhotoButton = element("button", "danger-action small-action", "Delete Photo");
@@ -670,12 +673,18 @@
 
   function normalizeCloudPhotos(photos) {
     return Array.isArray(photos)
-      ? photos.map((photo) => ({
-          id: photo.id || photo.PhotoId,
-          name: photo.name || photo.Filename || "Activity photo",
-          src: photo.src || photo.url || photo.Url || "",
-          createdAt: photo.createdAt || photo.CreatedAt || ""
-        })).filter((photo) => photo.id && photo.src)
+      ? photos.map((photo) => {
+          const src = photo.src || photo.url || photo.Url || "";
+          const fileId = photo.fileId || photo.FileId || extractDriveFileId(src);
+          return {
+            id: photo.id || photo.PhotoId,
+            name: photo.name || photo.Filename || "Activity photo",
+            src,
+            displaySrc: photo.displaySrc || photo.thumbnailUrl || driveImageDisplayUrl(src, fileId),
+            fileId,
+            createdAt: photo.createdAt || photo.CreatedAt || ""
+          };
+        }).filter((photo) => photo.id && photo.src)
       : [];
   }
 
@@ -701,6 +710,19 @@
     });
   }
 
+  function driveImageDisplayUrl(url, fileId) {
+    const id = fileId || extractDriveFileId(url);
+    return id ? `https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w1000` : url;
+  }
+
+  function extractDriveFileId(url) {
+    const value = String(url || "");
+    const queryMatch = value.match(/[?&]id=([^&]+)/);
+    if (queryMatch) return decodeURIComponent(queryMatch[1]);
+    const fileMatch = value.match(/\/file\/d\/([^/]+)/);
+    return fileMatch ? decodeURIComponent(fileMatch[1]) : "";
+  }
+
   function openPhotoViewer(photo, albumName) {
     const viewer = getPhotoViewer();
     const image = viewer.querySelector("[data-photo-viewer-image]");
@@ -708,9 +730,9 @@
     const meta = viewer.querySelector("[data-photo-viewer-meta]");
     const download = viewer.querySelector("[data-photo-viewer-download]");
 
-    image.src = photo.src;
+    image.src = photo.displaySrc || driveImageDisplayUrl(photo.src, photo.fileId);
     image.alt = photo.name || `${albumName} photo`;
-    title.textContent = photo.name || albumName || "Activity photo";
+    title.textContent = formatStoredPhotoDate(photo.createdAt);
     meta.textContent = `${albumName || "Activity album"} - ${formatStoredPhotoDate(photo.createdAt)}`;
     download.href = photo.src;
     download.download = safeDownloadName(photo.name || `${albumName || "activity-photo"}.png`);

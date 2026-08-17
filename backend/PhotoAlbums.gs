@@ -232,6 +232,7 @@ function uploadPhotos_(payload) {
 
     const photoId = "photo-" + Utilities.getUuid();
     const url = "https://drive.google.com/uc?export=view&id=" + file.getId();
+    const thumbnailUrl = "https://drive.google.com/thumbnail?id=" + file.getId() + "&sz=w1000";
     sheet.appendRow([
       photoId,
       albumId,
@@ -247,6 +248,8 @@ function uploadPhotos_(payload) {
       name: filename,
       src: url,
       url: url,
+      displaySrc: thumbnailUrl,
+      thumbnailUrl: thumbnailUrl,
       fileId: file.getId(),
       createdAt: now
     });
@@ -308,6 +311,8 @@ function listAlbums_() {
         name: row.Filename,
         src: row.Url,
         url: row.Url,
+        displaySrc: driveThumbnailUrl_(row.FileId, row.Url),
+        thumbnailUrl: driveThumbnailUrl_(row.FileId, row.Url),
         fileId: row.FileId,
         createdAt: row.CreatedAt
       });
@@ -402,6 +407,25 @@ function trashFile_(fileId) {
   } catch (error) {
     // A missing file should not stop the Sheet metadata from being cleaned up.
   }
+}
+
+/**
+ * Returns a Google Drive thumbnail URL that works better inside image tags.
+ */
+function driveThumbnailUrl_(fileId, url) {
+  const id = cleanText_(fileId) || extractDriveFileId_(url);
+  return id ? "https://drive.google.com/thumbnail?id=" + encodeURIComponent(id) + "&sz=w1000" : cleanText_(url);
+}
+
+/**
+ * Extracts a Drive file ID from common Drive URL shapes.
+ */
+function extractDriveFileId_(url) {
+  const value = cleanText_(url);
+  const queryMatch = value.match(/[?&]id=([^&]+)/);
+  if (queryMatch) return decodeURIComponent(queryMatch[1]);
+  const fileMatch = value.match(/\/file\/d\/([^/]+)/);
+  return fileMatch ? decodeURIComponent(fileMatch[1]) : "";
 }
 
 /**

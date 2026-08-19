@@ -10,10 +10,10 @@ The site is live-connected to Google Sheet tabs that are published to the web as
 - `activities.html` - Church Activities
 - `activity-photos.html` - Redirects old photo links to `activities.html#photos`
 - `dashboard.html` - Dashboard
-- `assignment.html` - Assignment
+- `assignment.html` - Assignment, Teens & Youth, and Prayer & Fasting tabs
 - `sunday-service.html` - Sunday Service
-- `teens-youth.html` - Teens & Youth Fellowship with Prayer
-- `prayer-fasting.html` - Prayer & Fasting
+- `teens-youth.html` - Redirects to `assignment.html#teens-youth`
+- `prayer-fasting.html` - Redirects to `assignment.html#prayer-fasting`
 - `css/style.css` - Shared dark/gold theme
 - `css/sunday-service.css` - Sunday Service styles
 - `js/config.js` - Published CSV URLs and constants

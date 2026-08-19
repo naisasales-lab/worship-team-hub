@@ -82,6 +82,7 @@
   }
 
   initActivityTabs();
+  initAssignmentTabs();
   initActivityAlbums();
   initAddActivityForm();
 
@@ -176,6 +177,89 @@
       });
       container.appendChild(card);
     });
+  }
+
+  function initAssignmentTabs() {
+    const tabs = Array.from(document.querySelectorAll("[data-assignment-tab]"));
+    const panels = Array.from(document.querySelectorAll("[data-assignment-panel]"));
+    const containers = Array.from(document.querySelectorAll("[data-assignment-sheet]"));
+    if (!tabs.length || !panels.length || !containers.length) return;
+
+    const showTab = (name) => {
+      tabs.forEach((tab) => {
+        const isActive = tab.dataset.assignmentTab === name;
+        tab.classList.toggle("is-active", isActive);
+        tab.setAttribute("aria-selected", String(isActive));
+      });
+
+      panels.forEach((panel) => {
+        const isActive = panel.dataset.assignmentPanel === name;
+        panel.classList.toggle("is-active", isActive);
+        panel.hidden = !isActive;
+      });
+
+      if (window.location.hash !== `#${name}`) {
+        history.replaceState(null, "", `#${name}`);
+      }
+    };
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => showTab(tab.dataset.assignmentTab));
+    });
+
+    containers.forEach(async (container) => {
+      const sheet = container.dataset.assignmentSheet;
+      const rows = await fetchSheet(sheet, sampleData[sheet] || []);
+      renderAssignmentCards(container, rows, container.dataset.assignmentKind);
+    });
+
+    const requestedTab = window.location.hash.replace("#", "");
+    if (tabs.some((tab) => tab.dataset.assignmentTab === requestedTab)) {
+      showTab(requestedTab);
+    }
+  }
+
+  function renderAssignmentCards(container, rows, kind) {
+    container.innerHTML = "";
+    if (!rows.length) {
+      container.appendChild(element("p", "empty-state", "No records yet."));
+      return;
+    }
+
+    rows.forEach((row) => {
+      const card = element("article", `record-card assignment-card assignment-card-${kind || "main"}`);
+      assignmentFields(row, kind).forEach(([label, value], index) => {
+        const field = element("div", index === 0 ? "record-field primary" : "record-field");
+        field.append(element("span", "", label), element("strong", "", value || "-"));
+        card.appendChild(field);
+      });
+      container.appendChild(card);
+    });
+  }
+
+  function assignmentFields(row, kind) {
+    if (kind === "youth") {
+      return [
+        ["Date", row.Date],
+        ["Role", row.Topic || "Youth Fellowship"],
+        ["Name", row.Speaker || "Speaker TBA"],
+        ["Location", row.Location]
+      ];
+    }
+
+    if (kind === "prayer") {
+      return [
+        ["Date Range", formatPrayerPeriod(row)],
+        ["Theme", row.Theme],
+        ["Prayer Points", row.PrayerPoints]
+      ];
+    }
+
+    return [
+      ["Date", row.Date],
+      ["Role", row.Role],
+      ["Name", row.Name]
+    ];
   }
 
   function renderPhotoLinks(value) {
@@ -936,15 +1020,71 @@
 
     container.innerHTML = "";
     [
-      ["This Sunday", `${nextService.Date || "TBA"} - ${nextService.WorshipLeader || "Leader TBA"}`],
-      ["Next Assignment", `${nextAssignment.Name || "TBA"} - ${nextAssignment.Role || "Role TBA"}`],
-      ["Upcoming Activities", `${nextActivity.EventName || "Activity TBA"} - ${nextActivity.Date || "Date TBA"}`],
-      ["Prayer & Fasting", formatPrayerPeriod(prayerPeriod)]
-    ].forEach(([label, value]) => {
+      {
+        label: "This Sunday",
+        icon: "calendar",
+        primary: nextService.Date || "TBA",
+        secondary: nextService.WorshipLeader ? `Worship Leader: ${nextService.WorshipLeader}` : "Leader TBA",
+        badge: relativeDateBadge(nextService.Date)
+      },
+      {
+        label: "Next Assignment",
+        icon: "microphone",
+        primary: nextAssignment.Name || "TBA",
+        secondary: nextAssignment.Role || "Role TBA"
+      },
+      {
+        label: "Upcoming Activities",
+        icon: "people",
+        primary: nextActivity.EventName || "Activity TBA",
+        secondary: nextActivity.Date || "Date TBA"
+      },
+      {
+        label: "Prayer & Fasting",
+        icon: "prayer",
+        primary: formatPrayerPeriod(prayerPeriod),
+        secondary: prayerPeriod.Theme || prayerPeriod.PrayerPoints || "Prayer focus TBA"
+      }
+    ].forEach((item) => {
       const card = element("article", "summary-card");
-      card.append(element("span", "", label), element("strong", "", value));
+      const header = element("div", "summary-card-head");
+      header.append(dashboardIcon(item.icon), element("span", "", item.label));
+      if (item.badge) header.appendChild(element("b", "summary-badge", item.badge));
+
+      const body = element("div", "summary-card-body");
+      body.append(
+        element("strong", "", item.primary),
+        element("p", "", item.secondary)
+      );
+      card.append(header, body);
       container.appendChild(card);
     });
+  }
+
+  function dashboardIcon(name) {
+    const icons = {
+      calendar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2v4M16 2v4M4 9h16M6 5h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/></svg>',
+      microphone: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a4 4 0 0 0 4-4V6a4 4 0 1 0-8 0v4a4 4 0 0 0 4 4Z"/><path d="M19 10a7 7 0 0 1-14 0M12 17v5M8 22h8"/></svg>',
+      people: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 11a4 4 0 1 0-8 0 4 4 0 0 0 8 0Z"/><path d="M3 21a9 9 0 0 1 18 0M18 8a3 3 0 0 1 3 3M6 8a3 3 0 0 0-3 3"/></svg>',
+      prayer: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3v8l-3 4a3 3 0 0 0 5 3l2-3M16 3v8l3 4a3 3 0 0 1-5 3l-2-3M12 3v19"/></svg>'
+    };
+    const wrapper = element("i", "summary-icon");
+    wrapper.innerHTML = icons[name] || icons.calendar;
+    return wrapper;
+  }
+
+  function relativeDateBadge(value) {
+    if (!value) return "";
+    const target = new Date(`${value}T00:00:00`);
+    if (Number.isNaN(target.getTime())) return "";
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const diffDays = Math.round((target - today) / 86400000);
+    if (diffDays === 0) return "today";
+    if (diffDays === 1) return "tomorrow";
+    if (diffDays > 1) return `in ${diffDays} days`;
+    if (diffDays === -1) return "yesterday";
+    return `${Math.abs(diffDays)} days ago`;
   }
 
   function renderMiniCountdown(container) {

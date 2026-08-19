@@ -7,6 +7,8 @@
   --gold-soft: rgba(46, 229, 157, 0.16);
   --blue: #38bdf8;
   --green: #2ee59d;
+  --amber: #d4af37;
+  --amber-soft: rgba(212, 175, 55, 0.16);
   --text: #f7f7f7;
   --muted: #a8b8b6;
   --line: rgba(56, 189, 248, 0.24);
@@ -618,6 +620,58 @@ h3 {
   transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
 }
 
+.assignment-tabs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: -18px 0 28px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.assignment-tab {
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.assignment-tab:hover,
+.assignment-tab.is-active {
+  border-color: transparent;
+  background: var(--green);
+  color: #04100d;
+}
+
+.assignment-panel {
+  animation: panelFade 180ms ease;
+}
+
+.assignment-card {
+  border-left-width: 2px;
+  border-radius: 12px;
+}
+
+.assignment-card-main {
+  border-left-color: var(--amber);
+}
+
+.assignment-card-youth {
+  border-left-color: var(--blue);
+}
+
+.assignment-card-prayer {
+  border-left-color: #a78bfa;
+}
+
 .record-card:hover,
 .summary-card:hover {
   transform: translateY(-2px);
@@ -646,6 +700,10 @@ h3 {
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.1em;
+}
+
+.assignment-card .record-field span {
+  color: var(--green);
 }
 
 .record-field.primary strong {
@@ -1234,11 +1292,70 @@ h3 {
 .summary-card {
   min-height: 138px;
   padding: 22px;
+  position: relative;
+  border-left: 2px solid var(--amber);
+  border-radius: 12px;
 }
 
-.summary-card strong {
+.summary-card-head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.summary-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(212, 175, 55, 0.34);
+  border-radius: 50%;
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+
+.summary-icon svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.summary-card-head span {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.summary-badge {
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: var(--amber-soft);
+  color: var(--amber);
+  font-size: 11px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.summary-card-body strong {
   display: block;
-  font-size: 20px;
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.summary-card-body p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.45;
 }
 
 .empty-state {

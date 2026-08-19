@@ -21,14 +21,29 @@
         <li><a href="dashboard.html" data-nav="dashboard">Dashboard</a></li>
         <li><a href="assignment.html" data-nav="assignment">Assignment</a></li>
         <li><a href="sunday-service.html" data-nav="sunday-service">Sunday Service</a></li>
-        <li><a href="teens-youth.html" data-nav="teens-youth">Teens & Youth</a></li>
-        <li><a href="prayer-fasting.html" data-nav="prayer-fasting">Prayer & Fasting</a></li>
       </ul>
     </nav>
   </header>
   <main>
     <section class="page-title"><p class="eyebrow">Team rotation</p><h1>Assignment</h1></section>
-    <section class="section"><div class="page-shell record-grid" data-sheet="Assignments"></div></section>
+    <section class="section">
+      <div class="page-shell">
+        <div class="assignment-tabs" role="tablist" aria-label="Assignment sections">
+          <button class="assignment-tab is-active" type="button" id="mainTeamTab" role="tab" aria-selected="true" aria-controls="mainTeamPanel" data-assignment-tab="main-team">Main Team</button>
+          <button class="assignment-tab" type="button" id="teensYouthTab" role="tab" aria-selected="false" aria-controls="teensYouthPanel" data-assignment-tab="teens-youth">Teens & Youth</button>
+          <button class="assignment-tab" type="button" id="prayerFastingTab" role="tab" aria-selected="false" aria-controls="prayerFastingPanel" data-assignment-tab="prayer-fasting">Prayer & Fasting</button>
+        </div>
+        <section class="assignment-panel is-active" id="mainTeamPanel" role="tabpanel" aria-labelledby="mainTeamTab" data-assignment-panel="main-team">
+          <div class="record-grid assignment-record-grid" data-assignment-sheet="Assignments" data-assignment-kind="main"></div>
+        </section>
+        <section class="assignment-panel" id="teensYouthPanel" role="tabpanel" aria-labelledby="teensYouthTab" data-assignment-panel="teens-youth" hidden>
+          <div class="record-grid assignment-record-grid" data-assignment-sheet="YouthFellowship" data-assignment-kind="youth"></div>
+        </section>
+        <section class="assignment-panel" id="prayerFastingPanel" role="tabpanel" aria-labelledby="prayerFastingTab" data-assignment-panel="prayer-fasting" hidden>
+          <div class="record-grid assignment-record-grid" data-assignment-sheet="PrayerFasting" data-assignment-kind="prayer"></div>
+        </section>
+      </div>
+    </section>
   </main>
   <footer class="site-footer"><strong>Door of Faith Church</strong> Worship Team Hub &copy; <span id="footerYear"></span></footer>
   <script src="js/config.js"></script>

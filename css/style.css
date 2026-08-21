@@ -61,6 +61,22 @@ a {
   backdrop-filter: blur(12px);
 }
 
+.service-sticky {
+  position: sticky;
+  top: 68px;
+  z-index: 18;
+  display: flex;
+  justify-content: center;
+  min-height: 34px;
+  padding: 8px 18px;
+  border-bottom: 1px solid rgba(46, 229, 157, 0.18);
+  background: rgba(2, 7, 6, 0.9);
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 900;
+  backdrop-filter: blur(10px);
+}
+
 .navbar {
   min-height: 68px;
   display: flex;
@@ -430,6 +446,7 @@ h3 {
 .quick-card:hover {
   transform: translateY(-3px);
   border-color: rgba(46, 229, 157, 0.58);
+  box-shadow: 0 24px 72px rgba(0, 0, 0, 0.32), 0 0 0 1px rgba(46, 229, 157, 0.18);
   background:
     linear-gradient(145deg, rgba(56, 189, 248, 0.1), transparent 42%),
     var(--panel-2);
@@ -448,6 +465,35 @@ h3 {
   color: var(--gold);
   font-size: 12px;
   font-weight: 900;
+}
+
+.quick-card.upgraded .quick-icon {
+  width: 42px;
+  height: 42px;
+  margin-bottom: 18px;
+}
+
+.quick-icon svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.quick-new-badge {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: var(--amber-soft);
+  color: var(--amber);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
 }
 
 .quick-card h2,
@@ -510,6 +556,249 @@ h3 {
   color: var(--gold);
   font-size: clamp(28px, 4vw, 42px);
   font-weight: 900;
+}
+
+.countdown-progress {
+  height: 6px;
+  overflow: hidden;
+  margin: 6px 0 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.countdown-progress span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--green), var(--blue));
+  transition: width 400ms ease;
+}
+
+.service-location {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.service-location span {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  color: var(--blue);
+}
+
+.service-location svg,
+.social-links svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mini-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.home-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.home-action:hover {
+  border-color: var(--green);
+  background: var(--gold-soft);
+  color: var(--green);
+}
+
+.home-action.primary {
+  border-color: var(--green);
+  background: linear-gradient(135deg, var(--green), var(--blue));
+  color: #04100d;
+}
+
+.week-panel,
+.devotional-card,
+.featured-photos {
+  margin-bottom: 42px;
+}
+
+.week-panel,
+.devotional-card {
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(46, 229, 157, 0.07), transparent 38%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 48%),
+    rgba(7, 17, 15, 0.92);
+  box-shadow: 0 20px 58px rgba(0, 0, 0, 0.26);
+}
+
+.week-panel-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.week-panel h2,
+.devotional-card h2 {
+  margin: 0;
+  color: var(--green);
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(30px, 4vw, 48px);
+  line-height: 1.06;
+}
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.week-item {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.025);
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.week-item:hover {
+  transform: translateY(-2px);
+  border-color: rgba(46, 229, 157, 0.44);
+  background: rgba(46, 229, 157, 0.07);
+}
+
+.week-item strong {
+  display: block;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.35;
+}
+
+.week-item p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.devotional-card {
+  text-align: center;
+}
+
+.devotional-card blockquote {
+  max-width: 780px;
+  margin: 18px auto 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(28px, 4vw, 46px);
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.devotional-card p {
+  margin: 16px 0 0;
+  color: var(--amber);
+  font-weight: 900;
+}
+
+.section-heading.compact {
+  margin-bottom: 16px;
+}
+
+.text-link {
+  color: var(--green);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.featured-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.featured-photo,
+.featured-photo-placeholder {
+  position: relative;
+  min-height: 170px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(56, 189, 248, 0.1), rgba(46, 229, 157, 0.07)),
+    var(--panel);
+}
+
+.featured-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 170px;
+  object-fit: cover;
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+
+.featured-photo:hover img {
+  transform: scale(1.04);
+  opacity: 0.9;
+}
+
+.featured-photo span {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(2, 7, 6, 0.78);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 900;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+}
+
+.featured-photo-placeholder {
+  display: grid;
+  align-content: center;
+  padding: 18px;
+}
+
+.featured-photo-placeholder strong {
+  color: var(--muted);
 }
 
 .home-page .section {
@@ -1851,15 +2140,78 @@ h3 {
 }
 
 .site-footer {
-  padding: 28px 18px;
+  padding: 34px 18px 22px;
   border-top: 1px solid var(--line);
-  background: #070707;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(46, 229, 157, 0.09), transparent 24rem),
+    #070707;
   color: var(--muted);
-  text-align: center;
 }
 
 .site-footer strong {
   color: var(--gold);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1.1fr auto;
+  gap: 24px;
+  width: min(1120px, 100%);
+  margin: 0 auto 24px;
+}
+
+.footer-grid p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.footer-grid a {
+  color: var(--green);
+}
+
+.footer-label {
+  display: block;
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.social-links {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.social-links a {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.social-links a:hover {
+  border-color: var(--green);
+  background: var(--gold-soft);
+  color: var(--green);
+}
+
+.footer-bottom {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
 }
 
 @media (max-width: 980px) {
@@ -1906,8 +2258,14 @@ h3 {
   .album-photo-grid,
   .album-workspace,
   .dashboard-grid,
-  .birthday-layout {
+  .birthday-layout,
+  .week-grid,
+  .footer-grid {
     grid-template-columns: 1fr;
+  }
+
+  .featured-photo-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .home-row {
@@ -1952,6 +2310,7 @@ h3 {
 
   .hero-actions,
   .section-heading,
+  .week-panel-head,
   .activity-tabs,
   .activity-toolbar,
   .activity-filters,
@@ -1963,6 +2322,12 @@ h3 {
     align-items: stretch;
     grid-template-columns: 1fr;
     flex-direction: column;
+  }
+
+  .service-sticky {
+    top: 68px;
+    font-size: 12px;
+    text-align: center;
   }
 
   .album-actions .gold-action,
@@ -2049,5 +2414,34 @@ h3 {
   .quote-card,
   .mini-card {
     min-height: 0;
+  }
+
+  .mini-actions,
+  .home-action {
+    width: 100%;
+  }
+
+  .featured-photo-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .featured-photo,
+  .featured-photo img,
+  .featured-photo-placeholder {
+    min-height: 190px;
+  }
+
+  .week-panel,
+  .devotional-card {
+    padding: 20px;
+  }
+
+  .footer-grid {
+    gap: 18px;
+  }
+
+  .social-links a {
+    width: 42px;
+    height: 42px;
   }
 }

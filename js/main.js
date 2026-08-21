@@ -29,6 +29,24 @@
     ]
   };
 
+  const churchAddress = "Door of Faith Church, Main Sanctuary";
+  const dailyVerses = [
+    { text: "Let everything that has breath praise the Lord.", reference: "Psalm 150:6" },
+    { text: "Serve the Lord with gladness; come before his presence with singing.", reference: "Psalm 100:2" },
+    { text: "God is spirit, and those who worship him must worship in spirit and truth.", reference: "John 4:24" },
+    { text: "Sing to him a new song; play skillfully, and shout for joy.", reference: "Psalm 33:3" },
+    { text: "Whatever you do, work at it with all your heart, as working for the Lord.", reference: "Colossians 3:23" }
+  ];
+
+  const quickAccessCards = [
+    { href: "activities.html", icon: "calendar", title: "Church Activities", copy: "Upcoming events, locations, and fellowship notes.", isNew: false },
+    { href: "dashboard.html", icon: "chart", title: "Dashboard", copy: "At-a-glance Sunday, assignment, activity, and prayer summaries.", isNew: false },
+    { href: "assignment.html", icon: "microphone", title: "Assignment", copy: "Serving rotations for worship leaders, APM, vocals, and musicians.", isNew: false },
+    { href: "sunday-service.html", icon: "church", title: "Sunday Service", copy: "Countdown, service colors, song keys, lyrics, and YouTube links.", isNew: false },
+    { href: "assignment.html#teens-youth", icon: "heart", title: "Teens & Youth", copy: "Fellowship with prayer schedules, topics, speakers, and locations.", isNew: false },
+    { href: "assignment.html#prayer-fasting", icon: "flame", title: "Prayer & Fasting", copy: "Guidelines, schedules, and prayer points for the church family.", isNew: false }
+  ];
+
   window.DFC = {
     sampleData,
     nextSundayAtEight,
@@ -88,6 +106,7 @@
     setInterval(() => renderMiniCountdown(mini), 1000);
   }
 
+  initHomePage();
   initActivityTabs();
   initActivitiesPage();
   initBirthdayCalendar();
@@ -186,6 +205,230 @@
       });
       container.appendChild(card);
     });
+  }
+
+  function initHomePage() {
+    const quickGrid = document.getElementById("quickAccessGrid");
+    const verseText = document.getElementById("dailyVerseText");
+    const addCalendarButton = document.getElementById("addCalendarButton");
+    const directionsLink = document.getElementById("directionsLink");
+    const weekGrid = document.getElementById("homeWeekGrid");
+    const photoStrip = document.getElementById("homePhotoStrip");
+
+    if (!quickGrid && !verseText && !weekGrid && !photoStrip) return;
+
+    if (quickGrid) renderQuickAccessCards(quickGrid);
+    if (verseText) renderDailyVerse();
+    if (directionsLink) {
+      directionsLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(churchAddress)}`;
+    }
+    if (addCalendarButton) {
+      addCalendarButton.addEventListener("click", downloadServiceCalendarEvent);
+    }
+    if (weekGrid) renderHomeWeek(weekGrid);
+    if (photoStrip) renderHomePhotoStrip(photoStrip);
+  }
+
+  function renderQuickAccessCards(container) {
+    container.innerHTML = "";
+    quickAccessCards.forEach((card) => {
+      const link = element("a", "quick-card upgraded");
+      link.href = card.href;
+      link.appendChild(quickAccessIcon(card.icon));
+      if (card.isNew) link.appendChild(element("b", "quick-new-badge", "New"));
+      link.append(
+        element("h2", "", card.title),
+        element("p", "", card.copy)
+      );
+      container.appendChild(link);
+    });
+  }
+
+  function quickAccessIcon(name) {
+    const icons = {
+      calendar: '<svg viewBox="0 0 24 24"><path d="M8 2v4M16 2v4M4 9h16M6 5h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/></svg>',
+      chart: '<svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-5M12 16V8M16 16v-7"/></svg>',
+      microphone: '<svg viewBox="0 0 24 24"><path d="M12 14a4 4 0 0 0 4-4V6a4 4 0 1 0-8 0v4a4 4 0 0 0 4 4Z"/><path d="M19 10a7 7 0 0 1-14 0M12 17v5M8 22h8"/></svg>',
+      church: '<svg viewBox="0 0 24 24"><path d="M12 2v5M9.5 4.5h5"/><path d="m4 11 8-6 8 6"/><path d="M6 10v11h12V10"/><path d="M10 21v-6a2 2 0 1 1 4 0v6"/></svg>',
+      heart: '<svg viewBox="0 0 24 24"><path d="M20.8 5.6a5.2 5.2 0 0 0-7.4 0L12 7l-1.4-1.4a5.2 5.2 0 1 0-7.4 7.4L12 21l8.8-8a5.2 5.2 0 0 0 0-7.4Z"/></svg>',
+      flame: '<svg viewBox="0 0 24 24"><path d="M12 22a7 7 0 0 0 7-7c0-4-3-6.5-5-9-.5 2-1.5 3.2-3 4.5C9.4 8.3 9 6.2 9.2 3 6.7 5.2 5 8.5 5 12.5 5 18 8 22 12 22Z"/></svg>'
+    };
+    const wrapper = element("span", "quick-icon");
+    wrapper.innerHTML = icons[name] || icons.calendar;
+    return wrapper;
+  }
+
+  function renderDailyVerse() {
+    const text = document.getElementById("dailyVerseText");
+    const reference = document.getElementById("dailyVerseReference");
+    if (!text || !reference || !dailyVerses.length) return;
+
+    const dayIndex = Math.floor(todayMidnight().getTime() / 86400000) % dailyVerses.length;
+    const verse = dailyVerses[dayIndex];
+    text.textContent = `"${verse.text}"`;
+    reference.textContent = verse.reference;
+  }
+
+  async function renderHomeWeek(container) {
+    container.innerHTML = "";
+    const [assignments, activities] = await Promise.all([
+      fetchSheet("Assignments", sampleData.Assignments),
+      fetchSheet("Activities", sampleData.Activities)
+    ]);
+
+    container.appendChild(homeWeekItem({
+      label: "Serving this Sunday",
+      title: servingThisSundayText(assignments),
+      meta: "View full team assignments",
+      href: "assignment.html"
+    }));
+
+    const nextActivity = nextUpcomingActivity(activities);
+    container.appendChild(homeWeekItem({
+      label: "Next activity",
+      title: nextActivity ? nextActivity.eventName : "Activity schedule coming soon",
+      meta: nextActivity ? `${nextActivity.date}${nextActivity.location ? ` - ${nextActivity.location}` : ""}` : "Add activities in the Activities sheet",
+      href: "activities.html"
+    }));
+
+    // Birthdays are shown only when a real Birthdays CSV tab is configured.
+    if (isSheetConfigured("Birthdays")) {
+      const birthdays = await fetchSheet("Birthdays", []);
+      const thisWeek = birthdaysThisWeek(birthdays);
+      if (thisWeek.length) {
+        container.appendChild(homeWeekItem({
+          label: "Birthdays this week",
+          title: thisWeek.map((birthday) => birthday.name).join(", "),
+          meta: thisWeek.map((birthday) => `${birthday.name}: ${birthday.nextDate.toLocaleDateString([], { month: "short", day: "numeric" })}`).join(" | "),
+          href: "activities.html#birthdays"
+        }));
+      }
+    }
+  }
+
+  function homeWeekItem(item) {
+    const link = element("a", "week-item");
+    link.href = item.href;
+    link.append(
+      element("span", "card-kicker", item.label),
+      element("strong", "", item.title),
+      element("p", "", item.meta)
+    );
+    return link;
+  }
+
+  function servingThisSundayText(rows) {
+    const nextServiceDate = dateKey(nextSundayAtEight(new Date()));
+    const exactRows = rows.filter((row) => row.Date === nextServiceDate);
+    const candidateRows = exactRows.length ? exactRows : rows.filter((row) => parseDateOnly(row.Date) >= todayMidnight());
+    const names = (candidateRows.length ? candidateRows : rows)
+      .map((row) => String(row.Name || "").trim())
+      .filter(Boolean)
+      .slice(0, 4);
+    return names.length ? names.join(", ") : "Assignments coming soon";
+  }
+
+  function nextUpcomingActivity(rows) {
+    return rows
+      .map(normalizeActivity)
+      .filter((activity) => activity.dateObject && activity.dateObject >= todayMidnight())
+      .sort((a, b) => a.dateObject - b.dateObject)[0] || null;
+  }
+
+  function birthdaysThisWeek(rows) {
+    return rows
+      .map(normalizeBirthday)
+      .filter((birthday) => birthday.name && birthday.month >= 0)
+      .map((birthday) => {
+        const nextDate = new Date(todayMidnight().getFullYear(), birthday.month, birthday.day);
+        if (nextDate < todayMidnight()) nextDate.setFullYear(nextDate.getFullYear() + 1);
+        return { ...birthday, nextDate, daysAway: Math.round((nextDate - todayMidnight()) / 86400000) };
+      })
+      .filter((birthday) => birthday.daysAway <= 7)
+      .sort((a, b) => a.daysAway - b.daysAway);
+  }
+
+  async function renderHomePhotoStrip(container) {
+    const rows = await fetchSheet("Activities", sampleData.Activities);
+    const photos = rows.flatMap((row) => photoRecordsFromActivity(row)).slice(0, 4);
+    container.innerHTML = "";
+
+    if (!photos.length) {
+      for (let index = 0; index < 4; index += 1) {
+        const placeholder = element("div", "featured-photo-placeholder");
+        placeholder.append(
+          element("span", "card-kicker", "Photo"),
+          element("strong", "", "Placeholder image")
+        );
+        container.appendChild(placeholder);
+      }
+      return;
+    }
+
+    photos.forEach((photo) => {
+      const link = element("a", "featured-photo");
+      link.href = photo.url;
+      link.target = "_blank";
+      link.rel = "noopener";
+
+      const image = document.createElement("img");
+      image.src = driveImageDisplayUrl(photo.url);
+      image.alt = `${photo.eventName || "Activity"} photo`;
+      image.loading = "lazy";
+      image.referrerPolicy = "no-referrer";
+      image.addEventListener("error", () => {
+        if (image.dataset.fallbackTried) return;
+        image.dataset.fallbackTried = "true";
+        image.src = photo.url;
+      });
+
+      const label = element("span", "", photo.eventName || "Activity photo");
+      link.append(image, label);
+      container.appendChild(link);
+    });
+  }
+
+  function isSheetConfigured(sheet) {
+    const url = window.SHEET_URLS && window.SHEET_URLS[sheet];
+    return Boolean(url) && !String(url).includes("PASTE_PUBLISHED_CSV_URL");
+  }
+
+  function downloadServiceCalendarEvent() {
+    const start = nextSundayAtEight(new Date());
+    const end = new Date(start.getTime() + 90 * 60000);
+    const title = "Door of Faith Church Sunday Service";
+    const ics = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//Door of Faith Church//Worship Team Hub//EN",
+      "BEGIN:VEVENT",
+      `UID:${start.getTime()}@dooroffaith.church`,
+      `DTSTAMP:${formatIcsDate(new Date())}`,
+      `DTSTART:${formatIcsDate(start)}`,
+      `DTEND:${formatIcsDate(end)}`,
+      `SUMMARY:${escapeIcs(title)}`,
+      `LOCATION:${escapeIcs(churchAddress)}`,
+      `DESCRIPTION:${escapeIcs("Sunday worship service at Door of Faith Church.")}`,
+      "END:VEVENT",
+      "END:VCALENDAR"
+    ].join("\r\n");
+
+    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `dfc-sunday-service-${dateKey(start)}.ics`;
+    document.body.appendChild(link);
+    link.click();
+    URL.revokeObjectURL(link.href);
+    link.remove();
+  }
+
+  function formatIcsDate(date) {
+    return `${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}T${pad(date.getHours())}${pad(date.getMinutes())}00`;
+  }
+
+  function escapeIcs(value) {
+    return String(value).replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\n/g, "\\n");
   }
 
   function initAssignmentTabs() {
@@ -1458,9 +1701,22 @@
 
   function renderMiniCountdown(container) {
     const now = new Date();
-    const diff = Math.max(0, nextSundayAtEight(now) - now);
+    const target = nextSundayAtEight(now);
+    const diff = Math.max(0, target - now);
     const totalSeconds = Math.floor(diff / 1000);
     container.textContent = `${pad(Math.floor(totalSeconds / 86400))} : ${pad(Math.floor((totalSeconds % 86400) / 3600))} : ${pad(Math.floor((totalSeconds % 3600) / 60))} : ${pad(totalSeconds % 60)}`;
+
+    const progress = document.getElementById("serviceWeekProgress");
+    if (progress) {
+      const previousService = new Date(target.getTime() - 7 * 86400000);
+      const elapsed = Math.min(1, Math.max(0, (now - previousService) / (target - previousService)));
+      progress.style.width = `${Math.round(elapsed * 100)}%`;
+    }
+
+    const sticky = document.getElementById("stickyCountdown");
+    if (sticky) {
+      sticky.textContent = `Next service in ${Math.floor(totalSeconds / 86400)}d ${pad(Math.floor((totalSeconds % 86400) / 3600))}h ${pad(Math.floor((totalSeconds % 3600) / 60))}m`;
+    }
   }
 
   function formatPrayerPeriod(row) {
@@ -1476,6 +1732,10 @@
     target.setHours(hour, 0, 0, 0);
     if (target <= now) target.setDate(target.getDate() + 7);
     return target;
+  }
+
+  function dateKey(date) {
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
   }
 
   function pad(value) {

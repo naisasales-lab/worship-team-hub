@@ -25,6 +25,9 @@
       </ul>
     </nav>
   </header>
+  <div class="service-sticky" aria-live="polite">
+    <span id="stickyCountdown">Next service loading...</span>
+  </div>
 
   <main>
     <section class="hero">
@@ -60,28 +63,82 @@
             <p class="body-copy" id="timeGreeting">Good Day</p>
             <p class="body-copy">Next Sunday service countdown</p>
             <div class="mini-countdown" id="miniCountdown">00 : 00 : 00 : 00</div>
+            <div class="countdown-progress" aria-label="Weekly countdown progress"><span id="serviceWeekProgress"></span></div>
+            <p class="service-location">
+              <span aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2"/></svg>
+              </span>
+              Door of Faith Church, Main Sanctuary
+            </p>
+            <div class="mini-actions">
+              <button class="home-action primary" type="button" id="addCalendarButton">Add to calendar</button>
+              <a class="home-action" id="directionsLink" href="https://www.google.com/maps/search/?api=1&query=Door%20of%20Faith%20Church%20Main%20Sanctuary" target="_blank" rel="noopener">Get directions</a>
+            </div>
           </article>
         </div>
+
+        <section class="week-panel" aria-labelledby="weekHeading">
+          <div class="week-panel-head">
+            <p class="eyebrow">This week</p>
+            <h2 id="weekHeading">This Week at a Glance</h2>
+          </div>
+          <div class="week-grid" id="homeWeekGrid"></div>
+        </section>
+
+        <article class="devotional-card" aria-labelledby="devotionalHeading">
+          <span class="card-kicker">Daily verse</span>
+          <h2 id="devotionalHeading">Verse for Today</h2>
+          <blockquote id="dailyVerseText">Loading today&apos;s encouragement...</blockquote>
+          <p id="dailyVerseReference"></p>
+        </article>
+
+        <section class="featured-photos" aria-labelledby="featuredPhotosHeading">
+          <div class="section-heading compact">
+            <div>
+              <p class="eyebrow">Recent moments</p>
+              <h2 id="featuredPhotosHeading">Fellowship Photos</h2>
+            </div>
+            <a class="text-link" href="activities.html#photos">View albums</a>
+          </div>
+          <div class="featured-photo-grid" id="homePhotoStrip"></div>
+        </section>
 
         <div class="section-heading">
           <p class="eyebrow">Quick access</p>
           <h2>Ministry at a glance</h2>
           <p>Find schedules, assignments, service plans, fellowship details, and prayer updates in one calm place.</p>
         </div>
-        <div class="quick-grid">
-          <a class="quick-card" href="activities.html"><span>01</span><h2>Church Activities</h2><p>Upcoming events, locations, and fellowship notes.</p></a>
-          <a class="quick-card" href="dashboard.html"><span>02</span><h2>Dashboard</h2><p>At-a-glance Sunday, assignment, activity, and prayer summaries.</p></a>
-          <a class="quick-card" href="assignment.html"><span>03</span><h2>Assignment</h2><p>Serving rotations for worship leaders, APM, vocals, and musicians.</p></a>
-          <a class="quick-card" href="sunday-service.html"><span>04</span><h2>Sunday Service</h2><p>Countdown, service colors, song keys, lyrics, and YouTube links.</p></a>
-          <a class="quick-card" href="assignment.html#teens-youth"><span>05</span><h2>Teens & Youth</h2><p>Fellowship with prayer schedules, topics, speakers, and locations.</p></a>
-          <a class="quick-card" href="assignment.html#prayer-fasting"><span>06</span><h2>Prayer & Fasting</h2><p>Guidelines, schedules, and prayer points for the church family.</p></a>
-        </div>
+        <div class="quick-grid" id="quickAccessGrid"></div>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <strong>Door of Faith Church</strong> Worship Team Hub &copy; <span id="footerYear"></span>
+    <div class="footer-grid">
+      <div>
+        <strong>Door of Faith Church</strong>
+        <p>Worship Team Hub</p>
+      </div>
+      <div>
+        <span class="footer-label">Schedule</span>
+        <p>Sundays 9:00 AM</p>
+        <p>Prayer & worship preparation before service</p>
+      </div>
+      <div>
+        <span class="footer-label">Location</span>
+        <p>Door of Faith Church, Main Sanctuary</p>
+        <p><a href="mailto:worship@dooroffaith.church">worship@dooroffaith.church</a></p>
+      </div>
+      <div>
+        <span class="footer-label">Connect</span>
+        <div class="social-links" aria-label="Social media links">
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="Instagram">ig</a>
+          <a href="#" aria-label="YouTube">yt</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom"><strong>Door of Faith Church</strong> Worship Team Hub &copy; <span id="footerYear"></span></div>
   </footer>
   <script src="js/config.js"></script>
   <script src="js/main.js"></script>

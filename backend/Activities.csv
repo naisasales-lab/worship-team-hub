@@ -1,6 +1,6 @@
-Date,EventName,Description,Location,Photos,Status
-2026-07-25,Saturday Worship Rehearsal,Full band rehearsal and vocal run-through for Sunday service,Main Sanctuary,,Approved
-2026-08-01,Worship Team Devotion,Prayer devotion and planning time for all worship volunteers,Fellowship Hall,,Approved
-2026-08-08,Music Workshop,Basic vocal warmups instrument coordination and worship flow training,Music Room,,Approved
-2026-08-15,Church Family Fellowship,Food fellowship testimonies and ministry updates,Church Grounds,,Approved
-2026-08-22,PAW Leaders Meeting,Monthly planning meeting for worship leaders and coordinators,Conference Room,,Approved
+Date,Time,EventName,Description,Location,Photos,Status,confirmed_count,rsvp_user_ids
+2026-08-29,09:00,Saturday Worship Rehearsal,Full band rehearsal and vocal run-through for Sunday service,Main Sanctuary,,Approved,12,
+2026-09-05,14:00,Worship Team Devotion,Prayer devotion and planning time for all worship volunteers,Fellowship Hall,,Approved,8,
+2026-09-12,10:00,Music Workshop,Basic vocal warmups instrument coordination and worship flow training,Music Room,,Approved,16,
+2026-09-19,16:00,Church Family Fellowship,Food fellowship testimonies and ministry updates,Church Grounds,,Approved,24,
+2026-09-26,18:30,PAW Leaders Meeting,Monthly planning meeting for worship leaders and coordinators,Conference Room,,Approved,6,

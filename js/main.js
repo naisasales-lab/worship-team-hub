@@ -1,8 +1,9 @@
 (function () {
   const sampleData = {
     Activities: [
-      { Date: "2026-07-26", EventName: "PAW Rehearsal", Description: "Full band and vocal preparation for Sunday service.", Location: "Main Sanctuary", Photos: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=900&q=80", Status: "Approved" },
-      { Date: "2026-08-02", EventName: "Worship Workshop", Description: "Training, devotion, and practical worship team coaching.", Location: "Fellowship Hall", Photos: "https://images.unsplash.com/photo-1515168833906-d2a3b82b302b?auto=format&fit=crop&w=900&q=80", Status: "Approved" }
+      { Date: "2026-08-29", Time: "09:00", EventName: "PAW Rehearsal", Description: "Full band and vocal preparation for Sunday service.", Location: "Main Sanctuary", Photos: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=900&q=80", Status: "Approved", confirmed_count: "12", rsvp_user_ids: "" },
+      { Date: "2026-09-06", Time: "14:00", EventName: "Worship Workshop", Description: "Training, devotion, and practical worship team coaching.", Location: "Fellowship Hall", Photos: "", Status: "Approved", confirmed_count: "8", rsvp_user_ids: "" },
+      { Date: "2026-08-02", Time: "16:00", EventName: "Youth Praise Night", Description: "Youth-led worship, testimony, and fellowship gathering.", Location: "Youth Room", Photos: "https://images.unsplash.com/photo-1515168833906-d2a3b82b302b?auto=format&fit=crop&w=900&q=80", Status: "Approved", confirmed_count: "24", rsvp_user_ids: "" }
     ],
     Assignments: [
       { Date: "2026-07-26", Role: "Worship Leader", Name: "Jane Reyes" },
@@ -19,6 +20,12 @@
     ],
     ServiceInfo: [
       { Date: "2026-07-26", WorshipLeader: "Jane Reyes", APM: "Mark Santos", ColorAssignment: "Red", ColorHex: "#c0392b" }
+    ],
+    Birthdays: [
+      { Name: "Jane Reyes", Birthdate: "1998-08-24", Ministry: "Vocals" },
+      { Name: "Mark Santos", Birthdate: "1995-09-02", Ministry: "Guitar" },
+      { Name: "Pearl Dela Cruz", Birthdate: "2001-09-05", Ministry: "Keys" },
+      { Name: "Angel Santos", Birthdate: "1999-09-18", Ministry: "Prayer Team" }
     ]
   };
 
@@ -82,6 +89,8 @@
   }
 
   initActivityTabs();
+  initActivitiesPage();
+  initBirthdayCalendar();
   initAssignmentTabs();
   initActivityAlbums();
   initAddActivityForm();
@@ -324,6 +333,364 @@
     });
   }
 
+  async function initActivitiesPage() {
+    const container = document.querySelector("[data-activity-list]");
+    if (!container) return;
+
+    const monthFilter = document.getElementById("activityMonthFilter");
+    const locationFilter = document.getElementById("activityLocationFilter");
+    const sortSelect = document.getElementById("activitySortSelect");
+    const rows = await fetchSheet("Activities", sampleData.Activities);
+    const activities = rows.map(normalizeActivity).filter((activity) => activity.eventName || activity.date);
+
+    populateActivityFilters(activities, monthFilter, locationFilter);
+
+    const render = () => {
+      let visible = [...activities];
+      if (monthFilter && monthFilter.value) {
+        visible = visible.filter((activity) => activity.monthKey === monthFilter.value);
+      }
+      if (locationFilter && locationFilter.value) {
+        visible = visible.filter((activity) => activity.location === locationFilter.value);
+      }
+
+      visible.sort((a, b) => {
+        const aTime = a.dateObject ? a.dateObject.getTime() : 0;
+        const bTime = b.dateObject ? b.dateObject.getTime() : 0;
+        return sortSelect && sortSelect.value === "latest" ? bTime - aTime : aTime - bTime;
+      });
+
+      renderActivityCards(container, visible);
+    };
+
+    [monthFilter, locationFilter, sortSelect].filter(Boolean).forEach((control) => {
+      control.addEventListener("change", render);
+    });
+    render();
+  }
+
+  function populateActivityFilters(activities, monthFilter, locationFilter) {
+    if (monthFilter) {
+      const months = [...new Map(activities
+        .filter((activity) => activity.monthKey)
+        .sort((a, b) => a.dateObject - b.dateObject)
+        .map((activity) => [activity.monthKey, activity.monthLabel])).entries()];
+      monthFilter.innerHTML = "";
+      monthFilter.appendChild(selectOption("", "All months"));
+      months.forEach(([value, label]) => monthFilter.appendChild(selectOption(value, label)));
+    }
+
+    if (locationFilter) {
+      const locations = [...new Set(activities.map((activity) => activity.location).filter(Boolean))].sort();
+      locationFilter.innerHTML = "";
+      locationFilter.appendChild(selectOption("", "All locations"));
+      locations.forEach((location) => locationFilter.appendChild(selectOption(location, location)));
+    }
+  }
+
+  function renderActivityCards(container, activities) {
+    container.innerHTML = "";
+    if (!activities.length) {
+      container.appendChild(element("p", "empty-state", "No activities match these filters."));
+      return;
+    }
+
+    activities.forEach((activity) => {
+      const status = activityStatus(activity.dateObject);
+      const rsvp = activityRsvpState(activity);
+      const card = element("article", `record-card activity-card status-${status.kind}${status.kind === "past" ? " is-past" : ""}`);
+      const top = element("div", "activity-card-top");
+      top.appendChild(element("span", `activity-status-badge ${status.kind}`, status.label));
+      card.appendChild(top);
+
+      [
+        ["Date", activity.date || "Date TBA", "calendar", true],
+        ["Time", formatActivityTime(activity.time) || "Time TBA", "clock", false],
+        ["Event Name", activity.eventName || "Activity TBA", "event", false],
+        ["Description", activity.description || "Details TBA", "description", false],
+        ["Location", activity.location || "Location TBA", "location", false]
+      ].forEach(([label, value, icon, primary]) => {
+        card.appendChild(activityField(label, value, icon, primary));
+      });
+
+      const photoField = element("div", "record-field activity-photo-field");
+      photoField.appendChild(activityLabel("Photo", "photo"));
+      if (activity.photos.length) {
+        photoField.appendChild(renderPhotoLinks(activity.photos.join(",")));
+      } else {
+        const placeholder = element("div", "activity-photo-placeholder");
+        placeholder.innerHTML = '<span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4z"/><path d="m4 15 4-4 4 4 2-2 6 5"/><circle cx="15" cy="10" r="1.5"/></svg></span><strong>No photo yet</strong>';
+        photoField.appendChild(placeholder);
+      }
+      card.appendChild(photoField);
+
+      const footer = element("div", "activity-rsvp");
+      const countLabel = status.kind === "past" ? "attended" : "confirmed";
+      footer.appendChild(element("span", "rsvp-count", `${rsvp.count} ${countLabel}`));
+      if (status.kind === "past") {
+        const ended = element("span", "rsvp-ended", "Event ended");
+        footer.appendChild(ended);
+      } else {
+        const button = element("button", rsvp.going ? "rsvp-button is-going" : "rsvp-button", rsvp.going ? "✓ Going" : "I'll be there");
+        button.type = "button";
+        button.disabled = rsvp.going;
+        button.addEventListener("click", () => {
+          saveActivityRsvp(activity.id);
+          renderActivityCards(container, activities);
+        });
+        footer.appendChild(button);
+      }
+      card.appendChild(footer);
+      container.appendChild(card);
+    });
+  }
+
+  function activityField(label, value, icon, primary) {
+    const field = element("div", primary ? "record-field primary" : "record-field");
+    field.append(activityLabel(label, icon), element("strong", "", value || "-"));
+    return field;
+  }
+
+  function activityLabel(label, icon) {
+    const node = element("span", "activity-field-label");
+    node.append(activityIcon(icon), document.createTextNode(label));
+    return node;
+  }
+
+  function activityIcon(name) {
+    const icons = {
+      calendar: '<svg viewBox="0 0 24 24"><path d="M8 2v4M16 2v4M4 9h16M6 5h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/></svg>',
+      clock: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+      event: '<svg viewBox="0 0 24 24"><path d="M12 3 4 8l8 5 8-5-8-5Z"/><path d="m4 13 8 5 8-5"/></svg>',
+      description: '<svg viewBox="0 0 24 24"><path d="M6 4h12v16H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>',
+      location: '<svg viewBox="0 0 24 24"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2"/></svg>',
+      photo: '<svg viewBox="0 0 24 24"><path d="M4 6h16v12H4z"/><path d="m4 15 4-4 4 4 2-2 6 5"/><circle cx="15" cy="10" r="1.5"/></svg>'
+    };
+    const wrapper = element("i", "activity-field-icon");
+    wrapper.innerHTML = icons[name] || icons.event;
+    return wrapper;
+  }
+
+  function normalizeActivity(row) {
+    const date = String(row.Date || "").trim();
+    const dateObject = parseDateOnly(date);
+    const location = String(row.Location || "").trim();
+    return {
+      id: activityId(row),
+      date,
+      dateObject,
+      monthKey: dateObject ? `${dateObject.getFullYear()}-${pad(dateObject.getMonth() + 1)}` : "",
+      monthLabel: dateObject ? dateObject.toLocaleDateString([], { month: "long", year: "numeric" }) : "",
+      time: String(row.Time || row.StartTime || row.EventTime || "").trim(),
+      eventName: String(row.EventName || "").trim(),
+      description: String(row.Description || "").trim(),
+      location,
+      photos: String(row.Photos || row.Photo || row.PhotoURL || "").split(",").map((url) => url.trim()).filter(Boolean),
+      confirmedCount: Number.parseInt(row.confirmed_count || row.ConfirmedCount || row.Confirmed || "0", 10) || 0,
+      rsvpUserIds: String(row.rsvp_user_ids || row.RSVPUserIds || row.RsvpUserIds || "").split(/[,\s]+/).map((id) => id.trim()).filter(Boolean)
+    };
+  }
+
+  function activityId(row) {
+    return [row.Date, row.Time, row.EventName, row.Location]
+      .map((value) => String(value || "").trim().toLowerCase())
+      .join("|") || `activity-${Math.random().toString(16).slice(2)}`;
+  }
+
+  function activityStatus(dateObject) {
+    const diff = daysUntil(dateObject);
+    if (diff === null) return { kind: "upcoming", label: "Upcoming" };
+    if (diff < 0) return { kind: "past", label: "Past" };
+    if (diff === 0) return { kind: "soon", label: "Today" };
+    if (diff <= 7) return { kind: "soon", label: `In ${diff} day${diff === 1 ? "" : "s"}` };
+    return { kind: "upcoming", label: "Upcoming" };
+  }
+
+  function activityRsvpState(activity) {
+    const userId = getRsvpUserId();
+    const saved = getSavedActivityRsvps();
+    const inBackend = activity.rsvpUserIds.includes(userId);
+    const going = inBackend || Boolean(saved[activity.id]);
+    return {
+      going,
+      count: activity.confirmedCount + (saved[activity.id] && !inBackend ? 1 : 0)
+    };
+  }
+
+  function getRsvpUserId() {
+    const key = "dfcRsvpUserId";
+    let userId = localStorage.getItem(key);
+    if (!userId) {
+      userId = `user-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      localStorage.setItem(key, userId);
+    }
+    return userId;
+  }
+
+  function getSavedActivityRsvps() {
+    try {
+      const value = JSON.parse(localStorage.getItem("dfcActivityRsvps") || "{}");
+      return value && typeof value === "object" ? value : {};
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function saveActivityRsvp(activityIdValue) {
+    const saved = getSavedActivityRsvps();
+    saved[activityIdValue] = true;
+    localStorage.setItem("dfcActivityRsvps", JSON.stringify(saved));
+  }
+
+  async function initBirthdayCalendar() {
+    const grid = document.getElementById("birthdayCalendarGrid");
+    const heading = document.getElementById("birthdayCurrentMonth");
+    const upcomingList = document.getElementById("birthdayUpcomingList");
+    const prev = document.getElementById("birthdayPrevMonth");
+    const next = document.getElementById("birthdayNextMonth");
+    if (!grid || !heading || !upcomingList) return;
+
+    const rows = await fetchSheet("Birthdays", sampleData.Birthdays);
+    const birthdays = rows.map(normalizeBirthday).filter((birthday) => birthday.name && birthday.birthdate);
+    const state = { month: new Date() };
+    state.month.setDate(1);
+
+    const render = () => {
+      renderBirthdayCalendar(grid, heading, state.month, birthdays);
+      renderUpcomingBirthdays(upcomingList, birthdays);
+    };
+
+    if (prev) prev.addEventListener("click", () => {
+      state.month.setMonth(state.month.getMonth() - 1);
+      render();
+    });
+    if (next) next.addEventListener("click", () => {
+      state.month.setMonth(state.month.getMonth() + 1);
+      render();
+    });
+
+    render();
+  }
+
+  function renderBirthdayCalendar(grid, heading, monthDate, birthdays) {
+    grid.innerHTML = "";
+    heading.textContent = monthDate.toLocaleDateString([], { month: "long", year: "numeric" });
+    ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].forEach((day) => {
+      grid.appendChild(element("div", "birthday-weekday", day));
+    });
+
+    const year = monthDate.getFullYear();
+    const month = monthDate.getMonth();
+    const firstDay = new Date(year, month, 1).getDay();
+    const totalDays = new Date(year, month + 1, 0).getDate();
+
+    for (let index = 0; index < firstDay; index += 1) {
+      grid.appendChild(element("div", "birthday-day is-muted", ""));
+    }
+
+    for (let day = 1; day <= totalDays; day += 1) {
+      const matches = birthdays.filter((birthday) => birthday.month === month && birthday.day === day);
+      const cell = element("div", matches.length ? "birthday-day has-birthday" : "birthday-day");
+      cell.appendChild(element("strong", "birthday-day-number", String(day)));
+      if (matches.length) {
+        cell.appendChild(element("span", "birthday-cake", "🎂"));
+        const names = element("small", "birthday-names", matches.map((birthday) => birthday.name).join(", "));
+        cell.appendChild(names);
+      }
+      grid.appendChild(cell);
+    }
+  }
+
+  function renderUpcomingBirthdays(container, birthdays) {
+    container.innerHTML = "";
+    if (!birthdays.length) {
+      container.appendChild(element("p", "empty-state", "No birthday records yet."));
+      return;
+    }
+
+    upcomingBirthdays(birthdays).slice(0, 8).forEach((birthday) => {
+      const item = element("article", "birthday-item");
+      const copy = element("div", "");
+      copy.append(
+        element("strong", "", birthday.name),
+        element("span", "", `${birthday.nextDate.toLocaleDateString([], { month: "short", day: "numeric" })} - ${birthday.ministry || "Ministry TBA"}`)
+      );
+      item.append(copy, element("b", "birthday-countdown", birthdayCountdownText(birthday.daysAway)));
+      container.appendChild(item);
+    });
+  }
+
+  function upcomingBirthdays(birthdays) {
+    const today = todayMidnight();
+    return birthdays.map((birthday) => {
+      const nextDate = new Date(today.getFullYear(), birthday.month, birthday.day);
+      if (nextDate < today) nextDate.setFullYear(nextDate.getFullYear() + 1);
+      return {
+        ...birthday,
+        nextDate,
+        daysAway: Math.round((nextDate - today) / 86400000)
+      };
+    }).sort((a, b) => a.daysAway - b.daysAway);
+  }
+
+  function normalizeBirthday(row) {
+    const birthdate = String(row.Birthdate || row.Birthday || row.DateOfBirth || "").trim();
+    const date = parseDateOnly(birthdate);
+    return {
+      name: String(row.Name || row.MemberName || "").trim(),
+      birthdate,
+      ministry: String(row.Ministry || row.Role || row.Team || "").trim(),
+      month: date ? date.getMonth() : -1,
+      day: date ? date.getDate() : -1
+    };
+  }
+
+  function birthdayCountdownText(daysAway) {
+    if (daysAway === 0) return "Today";
+    if (daysAway === 1) return "Tomorrow";
+    return `In ${daysAway} days`;
+  }
+
+  function parseDateOnly(value) {
+    const text = String(value || "").trim();
+    if (!text) return null;
+    const parts = text.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    const date = parts
+      ? new Date(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3]))
+      : new Date(text);
+    if (Number.isNaN(date.getTime())) return null;
+    date.setHours(0, 0, 0, 0);
+    return date;
+  }
+
+  function daysUntil(dateObject) {
+    if (!dateObject) return null;
+    return Math.round((dateObject - todayMidnight()) / 86400000);
+  }
+
+  function todayMidnight() {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return today;
+  }
+
+  function formatActivityTime(value) {
+    const text = String(value || "").trim();
+    if (!text) return "";
+    const match = text.match(/^(\d{1,2}):(\d{2})$/);
+    if (!match) return text;
+    const date = new Date();
+    date.setHours(Number(match[1]), Number(match[2]), 0, 0);
+    return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  }
+
+  function selectOption(value, text) {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = text;
+    return option;
+  }
+
   function initActivityTabs() {
     const tabs = Array.from(document.querySelectorAll("[data-activity-tab]"));
     const panels = Array.from(document.querySelectorAll("[data-activity-panel]"));
@@ -351,7 +718,8 @@
       tab.addEventListener("click", () => showTab(tab.dataset.activityTab));
     });
 
-    if (window.location.hash === "#photos") showTab("photos");
+    const requestedTab = window.location.hash.replace("#", "");
+    if (tabs.some((tab) => tab.dataset.activityTab === requestedTab)) showTab(requestedTab);
   }
 
   function initActivityAlbums() {
@@ -883,7 +1251,7 @@
   }
 
   function photoRecordsFromActivity(row) {
-    return String(row.Photos || "")
+    return String(row.Photos || row.Photo || row.PhotoURL || "")
       .split(",")
       .map((url) => url.trim())
       .filter(Boolean)
@@ -943,6 +1311,7 @@
         const photos = await filesToPayload(fileInput.files);
         const payload = {
           date: document.getElementById("activityDate").value,
+          time: document.getElementById("activityTime").value,
           eventName: document.getElementById("activityEventName").value.trim(),
           description: document.getElementById("activityDescription").value.trim(),
           location: document.getElementById("activityLocation").value.trim(),

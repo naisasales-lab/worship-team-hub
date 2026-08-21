@@ -1,6 +1,6 @@
 # Worship Team Hub
 
-Static, public read-only worship team website for Door of Faith Church.
+Static worship team website for Door of Faith Church.
 
 The site is live-connected to Google Sheet tabs that are published to the web as CSV. There is no database, deployment script, or server-side code.
 
@@ -14,7 +14,7 @@ The site is live-connected to Google Sheet tabs that are published to the web as
 - `sunday-service.html` - Sunday Service
 - `teens-youth.html` - Redirects to `assignment.html#teens-youth`
 - `prayer-fasting.html` - Redirects to `assignment.html#prayer-fasting`
-- `css/style.css` - Shared dark/gold theme
+- `css/style.css` - Shared dark green/black theme with teal and amber accents
 - `css/sunday-service.css` - Sunday Service styles
 - `js/config.js` - Published CSV URLs and constants
 - `js/main.js` - Shared nav, clock, CSV parser, fetch helpers, card rendering
@@ -34,17 +34,24 @@ Activities: Date, EventName, Description, Location, Photos, Status
 Assignments: Date, Role, Name
 YouthFellowship: Date, Topic, Speaker, Location
 PrayerFasting: StartDate, EndDate, Theme, PrayerPoints
+Birthdays: Name, Birthdate, Ministry
 ```
 
 For `Songs`, `Group` must be exactly `Praise` or `Worship`.
 
-For `Activities`, rows with `Status` set to `Pending` are hidden from public pages. Rows with `Status` set to `Approved`, blank, or missing are displayed.
+For `Activities`, use these headers for the enhanced cards and RSVP display:
+
+```text
+Date, Time, EventName, Description, Location, Photos, Status, confirmed_count, rsvp_user_ids
+```
+
+Rows with `Status` set to `Pending` are hidden from public pages. Rows with `Status` set to `Approved`, blank, or missing are displayed.
 
 CSV templates with sample rows are in the `backend/` folder.
 
 ## Publish Each Tab As CSV
 
-For each tab (`ServiceInfo`, `Songs`, `Activities`, `Assignments`, `YouthFellowship`, `PrayerFasting`):
+For each tab (`ServiceInfo`, `Songs`, `Activities`, `Assignments`, `YouthFellowship`, `PrayerFasting`, `Birthdays`):
 
 1. Open your Google Sheet.
 2. Go to `File > Share > Publish to web`.
@@ -69,6 +76,7 @@ The current `js/config.js` is already wired to the six published CSV URLs for:
 - `Assignments`
 - `YouthFellowship`
 - `PrayerFasting`
+- `Birthdays`
 
 A real published CSV URL looks like:
 
@@ -130,10 +138,10 @@ The Church Activities page includes a public `+ Add Activity` form. Normal site 
 Use these headers in the `Activities` tab:
 
 ```text
-Date, EventName, Description, Location, Photos, Status
+Date, Time, EventName, Description, Location, Photos, Status, confirmed_count, rsvp_user_ids
 ```
 
-Existing rows with only `Date`, `EventName`, `Description`, and `Location` still work. The submission script also fills missing `Photos` and `Status` headers if those cells are blank.
+Existing rows with only `Date`, `EventName`, `Description`, and `Location` still work, but the enhanced UI uses the added `Time`, `confirmed_count`, and `rsvp_user_ids` columns when available.
 
 ### 2. Create A Photo Folder
 

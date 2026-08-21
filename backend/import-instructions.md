@@ -1,6 +1,6 @@
 # CSV Import Instructions
 
-Use these six CSV files as clean starting data for your Google Sheet tabs:
+Use these seven CSV files as clean starting data for your Google Sheet tabs:
 
 - `ServiceInfo.csv`
 - `Songs.csv`
@@ -8,6 +8,7 @@ Use these six CSV files as clean starting data for your Google Sheet tabs:
 - `Assignments.csv`
 - `YouthFellowship.csv`
 - `PrayerFasting.csv`
+- `Birthdays.csv`
 
 Each file has row 1 as headers only, followed by sample records. There are no note rows, blank rows, formulas, or merged cells.
 
@@ -23,7 +24,7 @@ Each file has row 1 as headers only, followed by sample records. There are no no
 
 Example: after importing `ServiceInfo.csv`, rename the new tab to `ServiceInfo`.
 
-Repeat this process for all six CSV files.
+Repeat this process for all seven CSV files.
 
 ## Check The Imported Tabs
 
@@ -34,7 +35,7 @@ After each import, quickly confirm:
 - There is no note row such as `sample data`.
 - Dates use `YYYY-MM-DD`.
 - The `Songs` tab uses only `Praise` or `Worship` in the `Group` column.
-- The `Activities` tab includes `Photos` and `Status` columns for the approval workflow.
+- The `Activities` tab includes `Time`, `Photos`, `Status`, `confirmed_count`, and `rsvp_user_ids` columns for activity cards and RSVP display.
 
 ## Publish The Tabs
 

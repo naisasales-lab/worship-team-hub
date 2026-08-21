@@ -30,14 +30,50 @@
       <div class="page-shell">
         <div class="activity-tabs" role="tablist" aria-label="Activity views">
           <button class="activity-tab is-active" type="button" id="activitiesTab" role="tab" aria-selected="true" aria-controls="activitiesPanel" data-activity-tab="activities">Activities</button>
+          <button class="activity-tab" type="button" id="birthdaysTab" role="tab" aria-selected="false" aria-controls="birthdaysPanel" data-activity-tab="birthdays">🎂 Birthdays</button>
           <button class="activity-tab" type="button" id="photosTab" role="tab" aria-selected="false" aria-controls="photosPanel" data-activity-tab="photos">Activity Photos</button>
         </div>
 
         <section class="activity-panel is-active" id="activitiesPanel" role="tabpanel" aria-labelledby="activitiesTab" data-activity-panel="activities">
-          <div class="activity-actions">
+          <div class="activity-toolbar">
+            <div class="activity-filters" aria-label="Activity filters">
+              <label class="activity-filter-field" for="activityMonthFilter">
+                <span>Month</span>
+                <select id="activityMonthFilter"></select>
+              </label>
+              <label class="activity-filter-field" for="activityLocationFilter">
+                <span>Location</span>
+                <select id="activityLocationFilter"></select>
+              </label>
+              <label class="activity-filter-field" for="activitySortSelect">
+                <span>Sort</span>
+                <select id="activitySortSelect">
+                  <option value="soonest">Soonest date</option>
+                  <option value="latest">Latest date</option>
+                </select>
+              </label>
+            </div>
             <button class="gold-action" type="button" id="openActivityModal">+ Add Activity</button>
           </div>
-          <div class="record-grid" data-sheet="Activities"></div>
+          <div class="record-grid activity-record-grid" data-activity-list></div>
+        </section>
+
+        <section class="activity-panel" id="birthdaysPanel" role="tabpanel" aria-labelledby="birthdaysTab" data-activity-panel="birthdays" hidden>
+          <div class="birthday-layout">
+            <section class="birthday-calendar-card" aria-label="Birthday calendar">
+              <div class="birthday-calendar-head">
+                <button class="birthday-month-button" type="button" id="birthdayPrevMonth" aria-label="Previous month">&lt;</button>
+                <h2 id="birthdayCurrentMonth">Birthdays</h2>
+                <button class="birthday-month-button" type="button" id="birthdayNextMonth" aria-label="Next month">&gt;</button>
+              </div>
+              <div class="birthday-calendar-grid" id="birthdayCalendarGrid"></div>
+            </section>
+            <aside class="birthday-upcoming-card" aria-label="Upcoming birthdays">
+              <p class="eyebrow">Team calendar</p>
+              <h2>Upcoming Birthdays</h2>
+              <div class="birthday-list" id="birthdayUpcomingList"></div>
+            </aside>
+          </div>
         </section>
 
         <section class="activity-panel" id="photosPanel" role="tabpanel" aria-labelledby="photosTab" data-activity-panel="photos" hidden>
@@ -86,6 +122,10 @@
         <label>
           <span>Date</span>
           <input type="date" id="activityDate" required>
+        </label>
+        <label>
+          <span>Time</span>
+          <input type="time" id="activityTime">
         </label>
         <label>
           <span>Event Name</span>

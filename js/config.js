@@ -9,7 +9,8 @@ const SHEET_URLS = {
   Activities: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSWAgQp41RDz-hGEznGI2ZvgMy53OcjuMcM_62LZl_-ZsYa73n7PsxKnC5U-OXbDzZSCBd9EJpoinwd/pub?gid=551329346&single=true&output=csv",
   Assignments: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSWAgQp41RDz-hGEznGI2ZvgMy53OcjuMcM_62LZl_-ZsYa73n7PsxKnC5U-OXbDzZSCBd9EJpoinwd/pub?gid=1689033600&single=true&output=csv",
   YouthFellowship: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSWAgQp41RDz-hGEznGI2ZvgMy53OcjuMcM_62LZl_-ZsYa73n7PsxKnC5U-OXbDzZSCBd9EJpoinwd/pub?gid=1520137634&single=true&output=csv",
-  PrayerFasting: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSWAgQp41RDz-hGEznGI2ZvgMy53OcjuMcM_62LZl_-ZsYa73n7PsxKnC5U-OXbDzZSCBd9EJpoinwd/pub?gid=984236217&single=true&output=csv"
+  PrayerFasting: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSWAgQp41RDz-hGEznGI2ZvgMy53OcjuMcM_62LZl_-ZsYa73n7PsxKnC5U-OXbDzZSCBd9EJpoinwd/pub?gid=984236217&single=true&output=csv",
+  Birthdays: "PASTE_PUBLISHED_CSV_URL_FOR_BIRTHDAYS_TAB"
 };
 
 // Web App URL for the public Add Activity submission form.

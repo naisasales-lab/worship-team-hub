@@ -17,7 +17,7 @@
 
 const PHOTOS_FOLDER_ID = "PASTE_GOOGLE_DRIVE_FOLDER_ID_HERE";
 const ACTIVITIES_SHEET_NAME = "Activities";
-const ACTIVITIES_HEADERS = ["Date", "EventName", "Description", "Location", "Photos", "Status"];
+const ACTIVITIES_HEADERS = ["Date", "Time", "EventName", "Description", "Location", "Photos", "Status", "confirmed_count", "rsvp_user_ids"];
 const MAX_PHOTOS = 6;
 const MAX_BASE64_BYTES = 5 * 1024 * 1024;
 
@@ -123,11 +123,14 @@ function appendPendingActivity(payload, photoUrls) {
   ensureActivityHeaders(sheet);
   sheet.appendRow([
     String(payload.date).trim(),
+    String(payload.time || "").trim(),
     String(payload.eventName).trim(),
     String(payload.description || "").trim(),
     String(payload.location || "").trim(),
     photoUrls.join(", "),
-    "Pending"
+    "Pending",
+    0,
+    ""
   ]);
 }
 

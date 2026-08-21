@@ -14,6 +14,7 @@ This site uses a Google Sheet as a free read-only data source by publishing each
 - `Assignments`
 - `YouthFellowship`
 - `PrayerFasting`
+- `Birthdays`
 
 Capitalization matters because the frontend looks up these names in `SHEET_URLS`.
 
@@ -27,25 +28,27 @@ Use the CSV files in this folder as templates. Open each file and paste its cont
 - `Assignments.csv`
 - `YouthFellowship.csv`
 - `PrayerFasting.csv`
+- `Birthdays.csv`
 
 Expected headers:
 
 ```text
 ServiceInfo: Date, WorshipLeader, APM, ColorAssignment, ColorHex
 Songs: Date, Group, SongNumber, Title, Singer, OriginalKey, MyKey, LyricsURL, YouTubeURL
-Activities: Date, EventName, Description, Location, Photos, Status
+Activities: Date, Time, EventName, Description, Location, Photos, Status, confirmed_count, rsvp_user_ids
 Assignments: Date, Role, Name
 YouthFellowship: Date, Topic, Speaker, Location
 PrayerFasting: StartDate, EndDate, Theme, PrayerPoints
+Birthdays: Name, Birthdate, Ministry
 ```
 
 For `Songs`, `Group` must be exactly `Praise` or `Worship`.
 
-For `Activities`, `Status` controls approval. `Pending` rows are hidden from the public site. `Approved`, blank, or missing status rows are displayed.
+For `Activities`, `Status` controls approval. `Pending` rows are hidden from the public site. `Approved`, blank, or missing status rows are displayed. `confirmed_count` and `rsvp_user_ids` are read by the RSVP UI when present.
 
 ## 3. Publish Each Tab To Web As CSV
 
-For each tab (`ServiceInfo`, `Songs`, `Activities`, `Assignments`, `YouthFellowship`, `PrayerFasting`):
+For each tab (`ServiceInfo`, `Songs`, `Activities`, `Assignments`, `YouthFellowship`, `PrayerFasting`, `Birthdays`):
 
 1. Open the Google Sheet.
 2. Go to `File > Share > Publish to web`.
@@ -71,7 +74,8 @@ const SHEET_URLS = {
   Activities: "PASTE_PUBLISHED_CSV_URL_FOR_ACTIVITIES_TAB",
   Assignments: "PASTE_PUBLISHED_CSV_URL_FOR_ASSIGNMENTS_TAB",
   YouthFellowship: "PASTE_PUBLISHED_CSV_URL_FOR_YOUTHFELLOWSHIP_TAB",
-  PrayerFasting: "PASTE_PUBLISHED_CSV_URL_FOR_PRAYERFASTING_TAB"
+  PrayerFasting: "PASTE_PUBLISHED_CSV_URL_FOR_PRAYERFASTING_TAB",
+  Birthdays: "PASTE_PUBLISHED_CSV_URL_FOR_BIRTHDAYS_TAB"
 };
 ```
 
@@ -99,10 +103,11 @@ The frontend currently reads these exact fields:
 
 - `ServiceInfo`: `Date`, `WorshipLeader`, `APM`, `ColorAssignment`, `ColorHex`
 - `Songs`: `Date`, `Group`, `SongNumber`, `Title`, `Singer`, `OriginalKey`, `MyKey`, `LyricsURL`, `YouTubeURL`
-- `Activities`: `Date`, `EventName`, `Description`, `Location`, `Photos`, `Status`
+- `Activities`: `Date`, `Time`, `EventName`, `Description`, `Location`, `Photos`, `Status`, `confirmed_count`, `rsvp_user_ids`
 - `Assignments`: `Date`, `Role`, `Name`
 - `YouthFellowship`: `Date`, `Topic`, `Speaker`, `Location`
 - `PrayerFasting`: `StartDate`, `EndDate`, `Theme`, `PrayerPoints`
+- `Birthdays`: `Name`, `Birthdate`, `Ministry`
 
 Keep these names unchanged unless you also update the frontend JavaScript.
 
@@ -135,7 +140,7 @@ The `activities.html` page has a public `+ Add Activity` form. It does not chang
 New submissions are appended to the `Activities` tab as:
 
 ```text
-Date, EventName, Description, Location, Photos, Pending
+Date, Time, EventName, Description, Location, Photos, Pending, 0, blank rsvp_user_ids
 ```
 
 Rows with `Status = Pending` are hidden from the public site. To approve one, review the details and photo links, then change `Status` to `Approved`. To reject one, delete the row.

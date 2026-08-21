@@ -36,11 +36,10 @@
           <p class="eyebrow">Door of Faith Church</p>
           <h1><span>Worship Team</span><span>Hub</span></h1>
           <p class="hero-copy">A public read-only home for worship schedules, Sunday songs, assignments, activities, youth fellowship, and prayer updates.</p>
-          <div class="hero-highlights" aria-label="Worship team highlights">
-            <span>Serve with unity</span>
-            <span>Prepare with purpose</span>
-            <span>Worship as one family</span>
-          </div>
+          <article class="quote-card hero-reminder">
+            <span class="card-kicker">Team reminder</span>
+            <p><span>Worshiping For an</span><span>Audience of <strong>ONE</strong></span></p>
+          </article>
         </div>
         <aside class="hero-service-card" aria-label="Worship team focus">
           <span>Weekly Focus</span>
@@ -53,10 +52,13 @@
     <section class="section">
       <div class="page-shell">
         <div class="home-row">
-          <article class="quote-card">
-            <span class="card-kicker">Team reminder</span>
-            <p><span>Worshiping For an</span><span>Audience of <strong>ONE</strong></span></p>
-          </article>
+          <section class="week-panel home-week-card" aria-labelledby="weekHeading">
+            <div class="week-panel-head">
+              <p class="eyebrow">This week</p>
+              <h2 id="weekHeading">This Week at a Glance</h2>
+            </div>
+            <div class="week-grid" id="homeWeekGrid"></div>
+          </section>
           <article class="mini-card">
             <span class="card-kicker">Today</span>
             <p class="greeting">Hello Childrens of God</p>
@@ -68,22 +70,14 @@
               <span aria-hidden="true">
                 <svg viewBox="0 0 24 24"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2"/></svg>
               </span>
-              Door of Faith Church, Main Sanctuary
+              Door of Faith Church, Tanauan, Leyte
             </p>
             <div class="mini-actions">
               <button class="home-action primary" type="button" id="addCalendarButton">Add to calendar</button>
-              <a class="home-action" id="directionsLink" href="https://www.google.com/maps/search/?api=1&query=Door%20of%20Faith%20Church%20Main%20Sanctuary" target="_blank" rel="noopener">Get directions</a>
+              <a class="home-action" id="directionsLink" href="https://www.google.com/maps/search/?api=1&query=Door+of+Faith+Church+Tanauan+Leyte" target="_blank" rel="noopener">Get directions</a>
             </div>
           </article>
         </div>
-
-        <section class="week-panel" aria-labelledby="weekHeading">
-          <div class="week-panel-head">
-            <p class="eyebrow">This week</p>
-            <h2 id="weekHeading">This Week at a Glance</h2>
-          </div>
-          <div class="week-grid" id="homeWeekGrid"></div>
-        </section>
 
         <article class="devotional-card" aria-labelledby="devotionalHeading">
           <span class="card-kicker">Daily verse</span>
@@ -126,13 +120,13 @@
       </div>
       <div>
         <span class="footer-label">Location</span>
-        <p>Door of Faith Church, Main Sanctuary</p>
+        <p>Door of Faith Church, Tanauan, Leyte</p>
         <p><a href="mailto:worship@dooroffaith.church">worship@dooroffaith.church</a></p>
       </div>
       <div>
         <span class="footer-label">Connect</span>
         <div class="social-links" aria-label="Social media links">
-          <a href="#" aria-label="Facebook">f</a>
+          <a href="https://www.facebook.com/dfc.tanauanleyte" target="_blank" rel="noopener" aria-label="Facebook">f</a>
           <a href="#" aria-label="Instagram">ig</a>
           <a href="#" aria-label="YouTube">yt</a>
         </div>

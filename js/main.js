@@ -29,7 +29,8 @@
     ]
   };
 
-  const churchAddress = "Door of Faith Church, Main Sanctuary";
+  const churchAddress = "Door of Faith Church, Tanauan, Leyte";
+  const churchDirectionsUrl = "https://www.google.com/maps/search/?api=1&query=Door+of+Faith+Church+Tanauan+Leyte";
   const dailyVerses = [
     { text: "Let everything that has breath praise the Lord.", reference: "Psalm 150:6" },
     { text: "Serve the Lord with gladness; come before his presence with singing.", reference: "Psalm 100:2" },
@@ -220,7 +221,7 @@
     if (quickGrid) renderQuickAccessCards(quickGrid);
     if (verseText) renderDailyVerse();
     if (directionsLink) {
-      directionsLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(churchAddress)}`;
+      directionsLink.href = churchDirectionsUrl;
     }
     if (addCalendarButton) {
       addCalendarButton.addEventListener("click", downloadServiceCalendarEvent);
@@ -291,19 +292,6 @@
       href: "activities.html"
     }));
 
-    // Birthdays are shown only when a real Birthdays CSV tab is configured.
-    if (isSheetConfigured("Birthdays")) {
-      const birthdays = await fetchSheet("Birthdays", []);
-      const thisWeek = birthdaysThisWeek(birthdays);
-      if (thisWeek.length) {
-        container.appendChild(homeWeekItem({
-          label: "Birthdays this week",
-          title: thisWeek.map((birthday) => birthday.name).join(", "),
-          meta: thisWeek.map((birthday) => `${birthday.name}: ${birthday.nextDate.toLocaleDateString([], { month: "short", day: "numeric" })}`).join(" | "),
-          href: "activities.html#birthdays"
-        }));
-      }
-    }
   }
 
   function homeWeekItem(item) {

@@ -275,6 +275,7 @@ h3 {
 .home-page .hero-inner {
   position: relative;
   z-index: 1;
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
   gap: 34px;
 }
@@ -323,7 +324,9 @@ h3 {
 
 .home-page .hero-service-card {
   border-color: rgba(46, 229, 157, 0.34);
-  background: rgba(0, 0, 0, 0.35);
+  background:
+    linear-gradient(145deg, rgba(46, 229, 157, 0.08), transparent 38%),
+    rgba(7, 17, 15, 0.82);
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
 }
 
@@ -516,6 +519,7 @@ h3 {
 .home-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  align-items: stretch;
   gap: 16px;
   margin-bottom: 34px;
 }
@@ -713,22 +717,52 @@ h3 {
 }
 
 .devotional-card {
+  position: relative;
+  overflow: hidden;
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 34px;
   text-align: center;
+}
+
+.devotional-card::before {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  border: 1px solid rgba(212, 175, 55, 0.26);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, transparent calc(50% - 1px), rgba(65, 45, 20, 0.42) 50%, transparent calc(50% + 1px)),
+    radial-gradient(ellipse at 50% 50%, rgba(26, 18, 9, 0.28), transparent 42%),
+    linear-gradient(90deg, rgba(179, 143, 83, 0.2), rgba(245, 219, 156, 0.16) 48%, rgba(86, 65, 31, 0.24) 50%, rgba(245, 219, 156, 0.16) 52%, rgba(179, 143, 83, 0.2)),
+    #221d12;
+  box-shadow:
+    inset 0 0 34px rgba(0, 0, 0, 0.42),
+    inset 18px 0 30px rgba(255, 244, 205, 0.035),
+    inset -18px 0 30px rgba(255, 244, 205, 0.035);
+  pointer-events: none;
+}
+
+.devotional-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 .devotional-card blockquote {
   max-width: 780px;
   margin: 18px auto 0;
-  color: rgba(255, 255, 255, 0.88);
+  color: #fff2c2;
   font-family: "Playfair Display", Georgia, serif;
   font-size: clamp(28px, 4vw, 46px);
   font-weight: 800;
   line-height: 1.15;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.55);
 }
 
 .devotional-card p {
   margin: 16px 0 0;
-  color: var(--amber);
+  color: #f6c85f;
   font-weight: 900;
 }
 
@@ -838,7 +872,7 @@ h3 {
   color: var(--blue);
 }
 
-.home-page .hero-reminder {
+.home-page .hero-focus-card {
   width: min(540px, 100%);
   min-height: auto;
   margin-top: 28px;
@@ -846,25 +880,54 @@ h3 {
   border-color: rgba(56, 189, 248, 0.28);
   background:
     linear-gradient(145deg, rgba(46, 229, 157, 0.08), transparent 38%),
-    rgba(7, 17, 15, 0.78);
-  backdrop-filter: blur(8px);
+    var(--panel);
 }
 
-.home-page .hero-reminder p {
-  font-size: clamp(27px, 3.4vw, 42px);
+.home-left-stack {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.home-left-stack .quote-card {
+  min-height: 0;
+  padding: 24px;
+}
+
+.home-left-stack .quote-card p {
+  font-size: clamp(27px, 3vw, 38px);
 }
 
 .home-week-card {
   margin: 0;
-  min-height: 220px;
+  min-height: 0;
+  padding: 22px;
 }
 
 .home-week-card .week-panel-head {
   display: block;
+  margin-bottom: 12px;
+}
+
+.home-week-card h2 {
+  font-size: clamp(26px, 3vw, 36px);
 }
 
 .home-week-card .week-grid {
   grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.home-week-card .week-item {
+  padding: 14px;
+}
+
+.home-week-card .week-item strong {
+  font-size: 16px;
+}
+
+.home-week-card .week-item p {
+  font-size: 13px;
 }
 
 .home-page .section-heading {

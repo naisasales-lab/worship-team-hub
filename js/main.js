@@ -337,8 +337,7 @@
   }
 
   async function renderHomePhotoStrip(container) {
-    const rows = await fetchSheet("Activities", sampleData.Activities);
-    const photos = rows.flatMap((row) => photoRecordsFromActivity(row)).slice(0, 4);
+    const photos = await featuredJiosPhotos();
     container.innerHTML = "";
 
     if (!photos.length) {
@@ -355,25 +354,48 @@
 
     photos.forEach((photo) => {
       const link = element("a", "featured-photo");
-      link.href = photo.url;
+      link.href = photo.url || photo.src;
       link.target = "_blank";
       link.rel = "noopener";
 
       const image = document.createElement("img");
-      image.src = driveImageDisplayUrl(photo.url);
-      image.alt = `${photo.eventName || "Activity"} photo`;
+      image.src = photo.displaySrc || driveImageDisplayUrl(photo.url || photo.src, photo.fileId);
+      image.alt = `${photo.albumName || photo.eventName || "JIOS Thanksgiving Day"} photo`;
       image.loading = "lazy";
       image.referrerPolicy = "no-referrer";
       image.addEventListener("error", () => {
         if (image.dataset.fallbackTried) return;
         image.dataset.fallbackTried = "true";
-        image.src = photo.url;
+        image.src = photo.url || photo.src;
       });
 
-      const label = element("span", "", photo.eventName || "Activity photo");
+      const label = element("span", "", photo.albumName || photo.eventName || "JIOS Thanksgiving Day");
       link.append(image, label);
       container.appendChild(link);
     });
+  }
+
+  async function featuredJiosPhotos() {
+    if (isPhotoAlbumsCloudConfigured()) {
+      try {
+        const result = await fetchPhotoAlbumsJson(window.PHOTO_ALBUMS_SCRIPT_URL);
+        const albums = normalizeCloudAlbums(result.albums);
+        const jiosAlbum = albums.find((album) => {
+          const name = album.name.toLowerCase();
+          return name.includes("jios") && name.includes("thanksgiving") && name.includes("august 10");
+        });
+        if (jiosAlbum && jiosAlbum.photos.length) {
+          return jiosAlbum.photos.slice(0, 4).map((photo) => ({
+            ...photo,
+            albumName: "JIOS Thanksgiving Day"
+          }));
+        }
+      } catch (error) {
+        // Keep the homepage usable if cloud albums are temporarily unavailable.
+      }
+    }
+
+    return [];
   }
 
   function isSheetConfigured(sheet) {

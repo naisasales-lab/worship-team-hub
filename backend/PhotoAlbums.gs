@@ -15,6 +15,8 @@ const ALBUMS_SHEET_NAME = "PhotoAlbums";
 const PHOTOS_SHEET_NAME = "AlbumPhotos";
 const ALBUM_HEADERS = ["AlbumId", "Name", "CreatedAt", "UpdatedAt", "DeletedAt"];
 const PHOTO_HEADERS = ["PhotoId", "AlbumId", "Filename", "Url", "FileId", "CreatedAt", "DeletedAt"];
+const ACTIVITY_SUBMISSIONS_SHEET_NAME = "Activities";
+const ACTIVITY_SUBMISSION_HEADERS = ["Date", "Time", "EventName", "Description", "Location", "Photos", "Status", "confirmed_count", "rsvp_user_ids"];
 const MAX_PHOTOS_PER_UPLOAD = 12;
 const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
 
@@ -63,6 +65,9 @@ function doPost(e) {
       case "deletePhoto":
         item = deletePhoto_(payload);
         break;
+      case "submitActivity":
+        item = submitActivity_(payload);
+        break;
       default:
         throw new Error("Unknown album action.");
     }
@@ -71,6 +76,7 @@ function doPost(e) {
       success: true,
       album: item && item.album ? item.album : null,
       photo: item && item.photo ? item.photo : null,
+      activity: item && item.activity ? item.activity : null,
       albums: listAlbums_()
     });
   } catch (error) {
@@ -79,6 +85,67 @@ function doPost(e) {
       error: error.message
     });
   }
+}
+
+/**
+ * Appends a public activity submission as Pending. The website sends JSON with
+ * optional base64 photos, keeping the request compatible with Apps Script.
+ */
+function submitActivity_(payload) {
+  const date = cleanText_(payload.date);
+  const eventName = cleanText_(payload.eventName);
+  if (!date) throw new Error("Date is required.");
+  if (!eventName) throw new Error("Event Name is required.");
+
+  const photos = Array.isArray(payload.photos) ? payload.photos : [];
+  if (photos.length > 6) throw new Error("Upload up to 6 photos for an activity.");
+
+  const photoUrls = saveActivitySubmissionPhotos_(photos);
+  const sheet = getOrCreateSheet_(ACTIVITY_SUBMISSIONS_SHEET_NAME);
+  ensureHeaders_(sheet, ACTIVITY_SUBMISSION_HEADERS);
+
+  sheet.appendRow([
+    date,
+    cleanText_(payload.time),
+    eventName,
+    cleanText_(payload.description),
+    cleanText_(payload.location),
+    photoUrls.join(", "),
+    "Pending",
+    0,
+    ""
+  ]);
+
+  return {
+    activity: {
+      date: date,
+      eventName: eventName,
+      status: "Pending"
+    }
+  };
+}
+
+/**
+ * Saves optional activity photos to the same Drive folder used by albums.
+ */
+function saveActivitySubmissionPhotos_(photos) {
+  if (!photos.length) return [];
+
+  const folder = getPhotoFolder_();
+  return photos.map(function(photo) {
+    const filename = sanitizeFilename_(photo.filename || "activity-photo.png");
+    const mimeType = cleanText_(photo.mimeType) || "image/png";
+    const base64 = cleanText_(photo.base64);
+    if (!base64) throw new Error(filename + " is missing image data.");
+    if (estimatedBase64Bytes_(base64) > MAX_PHOTO_BYTES) {
+      throw new Error(filename + " is larger than 5 MB.");
+    }
+
+    const blob = Utilities.newBlob(Utilities.base64Decode(base64), mimeType, filename);
+    const file = folder.createFile(blob);
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    return "https://drive.google.com/uc?export=view&id=" + file.getId();
+  });
 }
 
 /**

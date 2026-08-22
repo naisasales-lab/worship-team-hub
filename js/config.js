@@ -13,16 +13,15 @@ const SHEET_URLS = {
   Birthdays: "PASTE_PUBLISHED_CSV_URL_FOR_BIRTHDAYS_TAB"
 };
 
+// Shared Apps Script Web App URL for write actions.
+// This existing deployed URL is used by cloud photo albums and activity submissions.
+const WORSHIP_TEAM_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzqd6CdEkgHq0LMGuuRRhpu1GIeLwpaKI9SaXvER9VQuTL7c7_qdB4vsMV7Cw8EmjK2/exec";
+
 // Web App URL for the public Add Activity submission form.
-// Deploy backend/AddActivity.gs as a Google Apps Script Web App, then paste
-// the resulting .../exec URL here.
-const ADD_ACTIVITY_SCRIPT_URL = "PASTE_APPS_SCRIPT_URL_HERE";
+const ADD_ACTIVITY_SCRIPT_URL = WORSHIP_TEAM_SCRIPT_URL;
 
 // Web App URL for shared Activity Photo Albums.
-// Deploy backend/PhotoAlbums.gs as a Google Apps Script Web App connected to
-// your Google Sheet and Drive folder, then paste the resulting .../exec URL.
-// When this placeholder is unchanged, albums fall back to this browser only.
-const PHOTO_ALBUMS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzqd6CdEkgHq0LMGuuRRhpu1GIeLwpaKI9SaXvER9VQuTL7c7_qdB4vsMV7Cw8EmjK2/exec";
+const PHOTO_ALBUMS_SCRIPT_URL = WORSHIP_TEAM_SCRIPT_URL;
 
 window.SHEET_URLS = SHEET_URLS;
 window.ADD_ACTIVITY_SCRIPT_URL = ADD_ACTIVITY_SCRIPT_URL;

@@ -1549,10 +1549,10 @@
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-      const scriptUrl = window.ADD_ACTIVITY_SCRIPT_URL || "";
+      const scriptUrl = activitySubmissionUrl();
       const defaultSubmitText = submitButton.textContent;
-      if (!scriptUrl || scriptUrl.includes("PASTE_APPS_SCRIPT_URL")) {
-        showStatus(status, "Activity submissions are not configured yet.", "error");
+      if (!scriptUrl) {
+        showStatus(status, "Activity submissions are unavailable because the Web App URL is missing.", "error");
         return;
       }
 
@@ -1563,6 +1563,7 @@
       try {
         const photos = await filesToPayload(fileInput.files);
         const payload = {
+          action: "submitActivity",
           date: document.getElementById("activityDate").value,
           time: document.getElementById("activityTime").value,
           eventName: document.getElementById("activityEventName").value.trim(),
@@ -1575,7 +1576,8 @@
           method: "POST",
           body: JSON.stringify(payload)
         });
-        const result = await response.json();
+        const result = await parseJsonResponse(response);
+        if (!response.ok) throw new Error(result.error || `Submission failed with HTTP ${response.status}`);
         if (!result.success) throw new Error(result.error || "Submission failed");
 
         form.reset();
@@ -1587,6 +1589,21 @@
         submitButton.textContent = defaultSubmitText;
       }
     });
+  }
+
+  function activitySubmissionUrl() {
+    const url = String(window.ADD_ACTIVITY_SCRIPT_URL || window.PHOTO_ALBUMS_SCRIPT_URL || "").trim();
+    return url && !url.includes("PASTE_APPS_SCRIPT_URL") && !url.includes("PASTE_PHOTO_ALBUMS") ? url : "";
+  }
+
+  async function parseJsonResponse(response) {
+    const text = await response.text();
+    try {
+      return JSON.parse(text);
+    } catch (error) {
+      const preview = text.trim().slice(0, 120);
+      throw new Error(`The activity submission Web App did not return JSON.${preview ? ` Response: ${preview}` : ""}`);
+    }
   }
 
   function openModal(modal) {

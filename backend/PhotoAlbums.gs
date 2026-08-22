@@ -92,60 +92,17 @@ function doPost(e) {
  * optional base64 photos, keeping the request compatible with Apps Script.
  */
 function submitActivity_(payload) {
-  const date = cleanText_(payload.date);
-  const eventName = cleanText_(payload.eventName);
-  if (!date) throw new Error("Date is required.");
-  if (!eventName) throw new Error("Event Name is required.");
-
-  const photos = Array.isArray(payload.photos) ? payload.photos : [];
-  if (photos.length > 6) throw new Error("Upload up to 6 photos for an activity.");
-
-  const photoUrls = saveActivitySubmissionPhotos_(photos);
-  const sheet = getOrCreateSheet_(ACTIVITY_SUBMISSIONS_SHEET_NAME);
-  ensureHeaders_(sheet, ACTIVITY_SUBMISSION_HEADERS);
-
-  sheet.appendRow([
-    date,
-    cleanText_(payload.time),
-    eventName,
-    cleanText_(payload.description),
-    cleanText_(payload.location),
-    photoUrls.join(", "),
-    "Pending",
-    0,
-    ""
-  ]);
+  validatePayload(payload);
+  const photoUrls = savePhotos(payload.photos || []);
+  appendPendingActivity(payload, photoUrls);
 
   return {
     activity: {
-      date: date,
-      eventName: eventName,
+      date: cleanText_(payload.date),
+      eventName: cleanText_(payload.eventName),
       status: "Pending"
     }
   };
-}
-
-/**
- * Saves optional activity photos to the same Drive folder used by albums.
- */
-function saveActivitySubmissionPhotos_(photos) {
-  if (!photos.length) return [];
-
-  const folder = getPhotoFolder_();
-  return photos.map(function(photo) {
-    const filename = sanitizeFilename_(photo.filename || "activity-photo.png");
-    const mimeType = cleanText_(photo.mimeType) || "image/png";
-    const base64 = cleanText_(photo.base64);
-    if (!base64) throw new Error(filename + " is missing image data.");
-    if (estimatedBase64Bytes_(base64) > MAX_PHOTO_BYTES) {
-      throw new Error(filename + " is larger than 5 MB.");
-    }
-
-    const blob = Utilities.newBlob(Utilities.base64Decode(base64), mimeType, filename);
-    const file = folder.createFile(blob);
-    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-    return "https://drive.google.com/uc?export=view&id=" + file.getId();
-  });
 }
 
 /**
